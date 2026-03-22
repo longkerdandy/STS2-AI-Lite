@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "default_agent": "combat",
+  "instructions": [
+    "docs/cli-reference.md",
+    "docs/combat.md",
+    "docs/characters.md"
+  ],
+  "permission": {
+    "bash": {
+      "*": "deny",
+      "./sts2 *": "allow"
+    },
+    "read": "allow",
+    "edit": "allow",
+    "skill": "allow"
+  }
+}

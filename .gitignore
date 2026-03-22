@@ -1,0 +1,11 @@
+# OpenCode runtime
+.opencode/node_modules/
+.opencode/state/
+
+# Transient run state
+run-state.md
+combat-notes.md
+
+# OS
+.DS_Store
+Thumbs.db
