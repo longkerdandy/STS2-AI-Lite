@@ -5,6 +5,8 @@ description: Full combat loop and reward settlement procedure for Slay the Spire
 
 ## Combat Loop Procedure
 
+Use this skill when **starting a full combat sequence** (e.g., via `/fight` command).
+
 Execute this loop continuously until combat ends, then settle rewards.
 
 ### Step 1: Read State
@@ -32,7 +34,7 @@ Player:
   hand[] — playable cards with cost, damage, block, type, keywords
   potions[] — available potions with slot, target_type
   powers[] — active buffs/debuffs
-  relics[] — equipped relics (check for combat-relevant effects)
+  relics[] — equipped relics
 
 Enemies (alive only, where is_alive == true):
   For each enemy:
@@ -51,41 +53,36 @@ If `lethal_gap > 0`, the player will die this turn without intervention.
 
 ### Step 3: Plan the Full Turn
 
-Plan ALL actions for this turn before executing any. Consider:
+**Load the `end-state-evaluation` skill** for detailed turn planning procedures.
 
-1. **Survival first**: If lethal, plan block cards / defensive potions / kills to survive.
-2. **Kill opportunities**: Can any enemy be killed? Calculate exact damage needed.
-3. **Efficient plays**: Maximize damage-per-energy, play buffs before attacks.
-4. **Potion timing**: Use potions only if the situation warrants it.
-5. **0-cost cards**: Always play 0-cost cards if beneficial.
+Plan ALL actions for this turn before executing any:
+
+1. **Generate 2-4 candidate sequences** — different card orders, targeting patterns, with/without potions
+2. **Simulate end-state** for each — enemy HP, player HP after counter-attack, energy remaining
+3. **Apply Evaluation Priority** — Kill > Survival > Net damage > Energy usage
+4. **Select optimal sequence**
+5. **Verify Hard Constraints** — lethal handled? energy will be 0?
 
 Output the plan as a numbered list before executing.
 
 ### Step 4: Execute Actions
 
-Play cards one at a time. After each play, track index shifts:
-
-```bash
-# Playing from a 5-card hand: [0:Strike, 1:Defend, 2:Bash, 3:Strike, 4:Defend]
-# If you play index 2 (Bash), the hand becomes:
-# [0:Strike, 1:Defend, 2:Strike, 3:Defend]
-# Old index 3 is now index 2, old index 4 is now index 3
-```
+Play cards one at a time:
 
 For targeted cards (Attack cards, targeted skills):
 ```bash
-./sts2 play_card <index> --target <combat_id>
+./sts2 play_card <card_id> --target <combat_id>
 ```
 
 For untargeted cards (self-buffs, AoE, skills without target):
 ```bash
-./sts2 play_card <index>
+./sts2 play_card <card_id>
 ```
 
 For potions:
 ```bash
-./sts2 use_potion <slot> --target <combat_id>   # targeted potions
-./sts2 use_potion <slot>                         # self-targeted potions
+./sts2 use_potion <potion_id> --target <combat_id>   # targeted potions
+./sts2 use_potion <potion_id>                         # self-targeted potions
 ```
 
 After each action, briefly verify the result JSON:
@@ -126,7 +123,7 @@ If the player won, proceed to Reward Settlement (below).
 
 ## Reward Settlement Procedure
 
-After combat victory, the game transitions to the reward screen. Execute this procedure to claim all rewards.
+After combat victory, the game transitions to the reward screen.
 
 ### Step 7: Confirm Reward Screen
 
@@ -134,51 +131,48 @@ After combat victory, the game transitions to the reward screen. Execute this pr
 ./sts2 state
 ```
 
-Verify `data.screen == "REWARD"`. If not on the reward screen (e.g., player died or screen transitioned unexpectedly), report to user and stop.
+Verify `data.screen == "REWARD"`. If not on the reward screen, report to user and stop.
 
-Read the `data.rewards.rewards[]` array. Each reward has an `index`, `type`, and type-specific fields.
+Read the `data.rewards.rewards[]` array.
 
 ### Step 8: Claim Non-Card Rewards
 
 Process Gold, Potion, Relic, and SpecialCard rewards first:
 
 ```bash
-./sts2 claim_reward <index>
+./sts2 claim_reward --type gold                                  # Claim gold reward
+./sts2 claim_reward --type potion --id <potion_id>               # Claim potion
+./sts2 claim_reward --type relic --id <relic_id>                 # Claim relic
+./sts2 claim_reward --type potion --id <potion_id> --nth 1       # Claim 2nd potion of same type
 ```
 
 For each non-card reward:
 - **Gold**: Always claim.
 - **Relic**: Always claim.
 - **Potion**: Claim if belt has space. If `POTION_BELT_FULL` error, skip this reward.
-- **SpecialCard**: Always claim (added directly to deck).
+- **SpecialCard**: Always claim.
 
 Before each claim, output 1 sentence explaining what is being claimed.
 
 ### Step 9: Handle Card Rewards
 
-**Load the `card-reward` skill** for structured card evaluation logic. Also read `docs/builds.md` for archetype strategy details.
+**Required:** Load the `card-reward` skill for structured card evaluation logic. Also read `docs/builds.md` for archetype strategy details.
 
-For each reward with `type == "Card"`, evaluate the `card_choices[]` array (typically 3 cards) using the card-reward skill's 5-step procedure:
-
-1. **Identify build archetype** — Check `run-state.md` for prior assessment, or analyze deck composition.
-2. **Evaluate each choice** — Score on archetype fit, S-tier status, weakness coverage, deck size.
-3. **Apply act-specific adjustments** — Act 1 favors damage/AoE, Act 2 favors scaling, Act 3+ is selective.
-4. **Pick or skip** — Take the highest-scoring card, or skip if all choices are negative.
-5. **Update run state** — If the pick meaningfully shifts the deck's archetype or strategy, update `run-state.md`.
-
-Read `docs/cards.md` if unfamiliar with any card in the choices.
+For each reward with `type == "Card"`, evaluate the `card_choices[]` array using the card-reward skill's procedure.
 
 To pick a card:
 ```bash
-./sts2 choose_card <reward_index> <card_index>
+./sts2 choose_card --type card --card_id <card_id>          # Select from 1st card reward
+./sts2 choose_card --type card --card_id <card_id> --nth 1  # Select from 2nd card reward
 ```
 
 To skip (take nothing):
 ```bash
-./sts2 skip_card <reward_index>
+./sts2 skip_card --type card              # Skip 1st card reward
+./sts2 skip_card --type card --nth 1      # Skip 2nd card reward
 ```
 
-Before each decision, output 1 sentence explaining the choice with reasoning (reference archetype and deck state).
+Before each decision, output 1 sentence explaining the choice.
 
 ### Step 10: Proceed
 
@@ -190,19 +184,9 @@ When all rewards have been claimed or skipped:
 
 Report a summary: rewards claimed (gold amount, potions, relics) and card chosen or skipped.
 
-### Reward Error Recovery
+## Error Recovery
 
-| Error | Action |
-|-------|--------|
-| `NOT_ON_REWARD_SCREEN` | Run `./sts2 state`, check current screen, stop if not on rewards |
-| `INVALID_REWARD_INDEX` | Run `./sts2 state`, re-read reward list |
-| `USE_CHOOSE_CARD` | Reward is a card reward — use `choose_card` or `skip_card` instead |
-| `POTION_BELT_FULL` | Skip this potion reward, continue to next |
-| `NOT_SUPPORTED` | Skip this reward, continue to next |
-| `CLAIM_FAILED` | Run `./sts2 state` to refresh, retry once |
-| `CONNECTION_ERROR` | Stop, report connection failure |
-
-### Error Recovery
+### Combat Errors
 
 | Error | Action |
 |-------|--------|
@@ -215,19 +199,36 @@ Report a summary: rewards claimed (gold amount, potions, relics) and card chosen
 | Exit code 4 (timeout) | Retry once, then stop |
 | Exit code 5 (state changed) | Run `./sts2 state` to refresh, re-plan |
 
+### Reward Errors
+
+| Error | Action |
+|-------|--------|
+| `NOT_ON_REWARD_SCREEN` | Run `./sts2 state`, check current screen, stop if not on rewards |
+| `INVALID_REWARD_INDEX` | Run `./sts2 state`, re-read reward list |
+| `USE_CHOOSE_CARD` | Reward is a card reward — use `choose_card` or `skip_card` instead |
+| `POTION_BELT_FULL` | Skip this potion reward, continue to next |
+| `NOT_SUPPORTED` | Skip this reward, continue to next |
+| `CLAIM_FAILED` | Run `./sts2 state` to refresh, retry once |
+| `CONNECTION_ERROR` | Stop, report connection failure |
+
 On any error, always re-run `./sts2 state` before continuing.
 
-### Long Combat Notes
+## Related Skills
 
-For fights exceeding ~10 turns, write key state to a note file to preserve information across potential context compaction:
+| Situation | Load Skill |
+|-----------|------------|
+| Planning individual turns | `end-state-evaluation` |
+| Evaluating enemy threats | `threat-assessment` |
+| Potion use timing | `potion-timing` |
+| Card reward decisions | `card-reward` |
 
-```
-Use the Write tool to save to combat-notes.md:
-- Turn number
-- Player HP / Max HP
-- Enemies remaining with HP
-- Key powers/buffs active
-- Potions remaining
-```
+## Game Knowledge References
 
-This prevents information loss during extended fights.
+| Need | Read File |
+|------|-----------|
+| Unfamiliar cards | `docs/cards.md` |
+| Unfamiliar enemies | `docs/enemies.md` |
+| Unfamiliar relics | `docs/relics.md` |
+| Unfamiliar potions | `docs/potions.md` |
+| Build archetypes | `docs/builds.md` |
+| CLI reference | `docs/cli-reference.md` |

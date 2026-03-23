@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "anthropic/claude-sonnet-4-5",
+  "model": "kimi-for-coding/k2p5",
   "default_agent": "combat",
   "instructions": [
     "docs/cli-reference.md",
@@ -9,11 +9,40 @@
   ],
   "permission": {
     "bash": {
-      "*": "deny",
+      "*": "allow",
       "./sts2 *": "allow"
     },
     "read": "allow",
     "edit": "allow",
     "skill": "allow"
+  },
+  "provider": {
+    "kimi-for-coding": {
+      "name": "Kimi For Coding",
+      "npm": "@ai-sdk/anthropic",
+      "options": {
+        "baseURL": "https://api.kimi.com/coding/v1"
+      },
+      "models": {
+        "k2p5": {
+          "name": "Kimi K2.5",
+          "reasoning": true,
+          "attachment": false,
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "modalities": {
+            "input": ["text", "image", "video"],
+            "output": ["text"]
+          },
+          "options": {
+            "interleaved": {
+              "field": "reasoning_content"
+            }
+          }
+        }
+      }
+    }
   }
 }

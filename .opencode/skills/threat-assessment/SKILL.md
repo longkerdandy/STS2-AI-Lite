@@ -5,9 +5,9 @@ description: Enemy intent analysis and threat prioritization for Slay the Spire 
 
 ## Threat Assessment
 
-Analyze enemy intents to determine survival needs and prioritize threats.
+Use this skill when **encountering unfamiliar enemies** or **complex multi-enemy situations** to analyze intents and prioritize threats.
 
-### Intent Types
+## Intent Types
 
 Enemies telegraph their next action through intents:
 
@@ -25,7 +25,7 @@ Enemies telegraph their next action through intents:
 | `Stun` | Stunned, skips turn | Free turn |
 | `Unknown` | Hidden intent | Assume moderate threat |
 
-### Damage Calculation
+## Damage Calculation
 
 ```
 For each alive enemy with Attack-type intents:
@@ -36,12 +36,9 @@ For each alive enemy with Attack-type intents:
   # Check enemy powers
   If player has Vulnerable: effective_damage = raw_damage * 1.5
   If enemy has Weak power: effective_damage = raw_damage * 0.75
-
-  # Block absorbs damage per-hit
-  total_threat = raw_damage (block is subtracted per-hit in actual combat)
 ```
 
-### Lethal Check Formula
+## Lethal Check Formula
 
 ```
 total_incoming = sum of all enemy raw damage (after player Vulnerable, enemy Weak)
@@ -53,7 +50,7 @@ If survival_margin <= 10: HIGH RISK — strongly prefer blocking
 If survival_margin > 10: SAFE — can play offensively
 ```
 
-### Threat Priority Ranking
+## Threat Priority Ranking
 
 When multiple enemies are alive, rank them by threat:
 
@@ -72,7 +69,7 @@ When multiple enemies are alive, rank them by threat:
 - Low-damage enemies with no scaling
 - Enemies that are sleeping or stunned
 
-### Multi-Enemy Damage Assessment
+## Multi-Enemy Damage Assessment
 
 ```
 Example: 3 enemies alive
@@ -87,7 +84,7 @@ Survival margin = 45 + 0 - 17 = 28 (SAFE)
 Decision: Play offensively. Consider killing Louse A (low HP) to remove 6 future damage.
 ```
 
-### Power Threat Assessment
+## Power Threat Assessment
 
 Watch for these dangerous enemy powers:
 
@@ -104,7 +101,7 @@ Watch for these dangerous enemy powers:
 | Angry | Gains Strength when damaged | MEDIUM — focus on one-shot kills |
 | Enrage | Gains Strength when player plays Skill | MEDIUM — prefer attacks over skills |
 
-### Reading Enemy Patterns
+## Reading Enemy Patterns
 
 For unfamiliar enemies, read `docs/enemies.md` to understand:
 - HP range (how hard to kill)
@@ -112,3 +109,17 @@ For unfamiliar enemies, read `docs/enemies.md` to understand:
 - Special mechanics (phase changes, summons, etc.)
 
 Key pattern to watch: Many enemies cycle through set move sequences. If you know the pattern, you can predict future turns and plan accordingly.
+
+## Related Skills
+
+| Situation | Load Skill |
+|-----------|------------|
+| Planning turns with threat info | `end-state-evaluation` |
+| Full combat procedure | `combat-loop` |
+
+## Game Knowledge References
+
+| Need | Read File |
+|------|-----------|
+| Detailed enemy behavior | `docs/enemies.md` |
+| Enemy HP and patterns | `docs/enemies.md` |

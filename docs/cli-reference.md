@@ -18,15 +18,45 @@ Test connection to the mod. Returns `{"ok": true}` on success.
 ./sts2 state
 ```
 
-Get current game state. Returns screen type, combat details, player info, hand, and enemies.
+Get current game state. Returns screen type, combat details, player info, hand, enemies, and rewards.
 
 ### play_card
 
 ```
-./sts2 play_card <index> [--target <combat_id>]
+./sts2 play_card <card_id> [--nth <n>] [--target <combat_id>]
 ```
 
-Play a card from hand by **0-based index**. `--target` is required for cards with `target_type` that needs an enemy (e.g., `ENEMY`). Omit `--target` for self-targeting or area cards.
+Play a card from hand by **card ID**.
+
+- **card_id**: Card identifier (e.g., `STRIKE_IRONCLAD`)
+- **--nth**: N-th occurrence when multiple copies exist (0-based, optional, defaults to 0)
+- **--target**: Required for cards with enemy-targeting target type. Omit for self-targeting or area cards.
+
+Examples:
+```bash
+./sts2 play_card STRIKE_IRONCLAD                    # Play first Strike
+./sts2 play_card STRIKE_IRONCLAD --nth 1            # Play second Strike if multiple exist
+./sts2 play_card STRIKE_IRONCLAD --target 123       # Strike specific enemy
+```
+
+### use_potion
+
+```
+./sts2 use_potion <potion_id> [--nth <n>] [--target <combat_id>]
+```
+
+Use a potion by **potion ID**.
+
+- **potion_id**: Potion identifier (e.g., `FIRE_POTION`)
+- **--nth**: N-th occurrence when multiple copies exist (0-based, optional, defaults to 0)
+- **--target**: Required for enemy-targeting potions
+
+Examples:
+```bash
+./sts2 use_potion FIRE_POTION                       # Use first Fire Potion
+./sts2 use_potion FIRE_POTION --nth 1               # Use second Fire Potion if multiple exist
+./sts2 use_potion FIRE_POTION --target 456          # Use on specific enemy
+```
 
 ### end_turn
 
@@ -36,37 +66,62 @@ Play a card from hand by **0-based index**. `--target` is required for cards wit
 
 End the current turn. The response contains all enemy action results (damage dealt, buffs applied, etc.).
 
-### use_potion
-
-```
-./sts2 use_potion <slot> [--target <combat_id>]
-```
-
-Use a potion by **0-based belt slot**. `--target` required for enemy-targeting potions.
-
 ### claim_reward
 
 ```
-./sts2 claim_reward <index>
+./sts2 claim_reward --type <type> [--id <id>] [--nth <n>]
 ```
 
-Claim a non-card reward by **0-based index** in the reward list. Works for Gold, Potion, Relic, and SpecialCard rewards. For card rewards, use `choose_card` instead (returns `USE_CHOOSE_CARD` error if attempted on a card reward).
+Claim a non-card reward by **type and optional ID**.
+
+- **--type**: Reward type - `gold`, `potion`, `relic`, `special_card`
+- **--id**: Item ID (required for `potion`, `relic`, `special_card`; optional for `gold`)
+- **--nth**: N-th occurrence when multiple rewards of same type exist (0-based, optional, defaults to 0)
+
+Examples:
+```bash
+./sts2 claim_reward --type gold                                   # Claim gold reward
+./sts2 claim_reward --type potion --id FIRE_POTION               # Claim Fire Potion
+./sts2 claim_reward --type relic --id BURNING_BLOOD              # Claim specific relic
+./sts2 claim_reward --type potion --id FIRE_POTION --nth 1       # Claim 2nd Fire Potion
+```
+
+For card rewards, use `choose_card` instead (returns `USE_CHOOSE_CARD` error if attempted on a card reward).
 
 ### choose_card
 
 ```
-./sts2 choose_card <reward_index> <card_index>
+./sts2 choose_card --type card --card_id <card_id> [--nth <n>]
 ```
 
-Pick a specific card from a card reward. `reward_index` is the reward's position in the reward list (0-based). `card_index` is the card's position in the card choices (0-based, typically 0-2). The card is added directly to the deck.
+Pick a specific card from a card reward by **card ID**.
+
+- **--type**: Must be `card`
+- **--card_id**: Card identifier to select (e.g., `STRIKE_IRONCLAD`)
+- **--nth**: N-th card reward when multiple exist (0-based, optional, defaults to 0)
+
+Example:
+```bash
+./sts2 choose_card --type card --card_id STRIKE_IRONCLAD          # Select from 1st card reward
+./sts2 choose_card --type card --card_id STRIKE_IRONCLAD --nth 1  # Select from 2nd card reward
+```
 
 ### skip_card
 
 ```
-./sts2 skip_card <reward_index>
+./sts2 skip_card --type card [--nth <n>]
 ```
 
-Skip a card reward — take nothing. `reward_index` is the card reward's position in the reward list.
+Skip a card reward — take nothing.
+
+- **--type**: Must be `card`
+- **--nth**: N-th card reward when multiple exist (0-based, optional, defaults to 0)
+
+Example:
+```bash
+./sts2 skip_card --type card              # Skip 1st card reward
+./sts2 skip_card --type card --nth 1      # Skip 2nd card reward
+```
 
 ### proceed
 
@@ -83,7 +138,7 @@ Leave the reward screen and proceed to the map. Any unclaimed rewards are automa
 | 0 | Success |
 | 1 | Connection error (game not running, mod not loaded) |
 | 2 | Invalid game state (not in combat, not on reward screen, combat ending, not player turn) |
-| 3 | Invalid parameter (bad index, missing target, unknown command) |
+| 3 | Invalid parameter (bad ID, missing target, unknown command, ID mismatch) |
 | 4 | Timeout (action did not complete in time) |
 | 5 | State changed (concurrent modification) |
 
@@ -151,10 +206,8 @@ data
 ### Relic Object
 
 ```json
-{"id": "string", "name": "string", "description": "string", "rarity": "string", "status": "string", "counter": 0}
+{"id": "string", "name": "string", "description": "string", "rarity": "string"}
 ```
-
-`counter` is optional -- only present for relics that track usage.
 
 ### Potion Object
 
@@ -172,21 +225,21 @@ data
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `index` | int | 0-based position in hand |
+| `index` | int | 0-based position in hand (may shift after plays) |
 | `id` | string | Card identifier |
 | `name` | string | Display name |
 | `description` | string | Card effect text |
-| `type` | string | `ATTACK`, `SKILL`, `POWER`, `STATUS`, `CURSE` |
-| `rarity` | string | `BASIC`, `COMMON`, `UNCOMMON`, `RARE`, `SPECIAL`, `CURSE` |
-| `target_type` | string | `ENEMY`, `ALL_ENEMY`, `SELF`, `NONE`, etc. |
-| `cost` | int | Energy cost |
-| `star_cost` | int? | Star cost (Regent only) |
-| `keywords` | string[] | Keywords like `Exhaust`, `Ethereal`, `Retain`, `Innate` |
-| `tags` | string[] | Additional tags |
+| `type` | string | `Attack`, `Skill`, `Power`, `Status`, `Curse` |
+| `rarity` | string | `Basic`, `Common`, `Uncommon`, `Rare`, `Ancient`, `Event`, `Token`, `Status`, `Curse` |
+| `target_type` | string | `None`, `Self`, `AnyEnemy`, `AllEnemies`, `RandomEnemy`, `AnyAlly`, etc. |
+| `cost` | int | Energy cost (-1 for X-cost) |
+| `star_cost` | int? | Star cost (Regent only, -1 for X-star) |
+| `keywords` | string[] | Keywords like `Exhaust`, `Ethereal`, `Innate`, `Retain`, `Sly` |
+| `tags` | string[] | Additional tags like `Strike`, `Defend` |
 | `damage` | int? | Preview damage (after all modifiers) |
 | `block` | int? | Preview block (after all modifiers) |
-| `enchantment` | object? | Enchantment details |
-| `affliction` | object? | Affliction details |
+| `enchantment` | string? | Enchantment model ID |
+| `affliction` | string? | Affliction model ID |
 | `is_upgraded` | bool | Whether the card is upgraded |
 | `can_play` | bool | Whether the card can be played right now |
 | `unplayable_reason` | string? | Why the card can't be played |
@@ -195,7 +248,7 @@ data
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `combat_id` | int | Stable target ID for `--target` parameter |
+| `combat_id` | uint | **Stable** target ID for `--target` parameter (does not change when enemies die) |
 | `id` | string | Enemy type identifier |
 | `name` | string | Display name |
 | `hp`, `max_hp` | int | Current and maximum health |
@@ -203,14 +256,14 @@ data
 | `is_alive` | bool | Whether enemy is alive |
 | `is_minion` | bool | Whether enemy is a summoned minion |
 | `move_id` | string | Current move identifier |
-| `intents` | array | Current turn intents (see below) |
+| `intents` | array | Current turn intents |
 | `powers` | array | Active powers/buffs/debuffs |
 
 ### Intent Object
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `type` | string | `ATTACK`, `DEFEND`, `BUFF`, `DEBUFF`, `UNKNOWN`, etc. |
+| `type` | string | `Attack`, `Defend`, `Buff`, `Debuff`, `Unknown`, etc. |
 | `damage` | int? | Damage **per hit** |
 | `hits` | int? | Number of hits (total damage = damage * hits) |
 
@@ -222,7 +275,7 @@ Returned by `./sts2 state` in the `data.rewards` field when screen is `REWARD`.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `index` | int | 0-based position in reward list (for `claim_reward`) |
+| `index` | int | 0-based position in reward list (legacy, may shift after claims) |
 | `type` | string | `Gold`, `Potion`, `Relic`, `Card`, `SpecialCard`, `CardRemoval` |
 | `description` | string | Localized description |
 | `gold_amount` | int? | Gold rewards only: amount of gold |
@@ -241,8 +294,8 @@ Returned by `./sts2 state` in the `data.rewards` field when screen is `REWARD`.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `index` | int | 0-based position in card choices (for `choose_card`) |
-| `id` | string | Card identifier |
+| `index` | int | 0-based position in card choices (legacy) |
+| `id` | string | Card identifier (use with `choose_card --card_id`) |
 | `name` | string | Display name |
 | `description` | string | Card effect text |
 | `type` | string | `Attack`, `Skill`, `Power`, `Status`, `Curse` |
@@ -293,11 +346,12 @@ After `play_card`, `end_turn`, and `use_potion`, the response `data` includes a 
 
 ## Key Notes
 
+- **Use IDs, not indices**: All commands now use stable IDs (`card_id`, `potion_id`, `relic_id`) instead of shifting indices. This prevents errors when the game state changes between command issuance and execution.
+- **--nth parameter**: Only specify `--nth` when multiple items with the same ID exist. If only one item exists but `--nth` is specified with a non-zero value, an `AMBIGUOUS_REWARD` error is returned.
+- **combat_id** on enemies is **stable** across the entire combat -- use it for `--target`. It does not change when other enemies die.
 - Null/empty fields are **omitted** from JSON (not serialized as `null`).
 - `damage` and `block` on cards are **preview values** after all modifiers (strength, vulnerable, etc.).
 - `intents[].damage` is **per-hit**; multiply by `intents[].hits` for total incoming damage.
-- `combat_id` on enemies is **stable** across the entire combat -- use it for `--target`.
-- Card `index` values **reindex after each play**. If you play index 2 from a 5-card hand, old indices 3 and 4 become 2 and 3.
 - After `end_turn`, the response contains all enemy actions -- always read it.
 
 ## Error Handling
@@ -305,12 +359,15 @@ After `play_card`, `end_turn`, and `use_potion`, the response `data` includes a 
 | Error | Cause | Recovery |
 |-------|-------|----------|
 | `TARGET_NOT_FOUND` | Enemy died or wrong combat_id | Run `./sts2 state` to get alive enemies |
-| `INVALID_CARD_INDEX` | Hand reindexed after previous play | Run `./sts2 state` to get current hand |
+| `CARD_NOT_FOUND` | Card ID not in hand | Run `./sts2 state` to get current hand |
 | `CANNOT_PLAY_CARD` | Not enough energy or blocked by effect | Skip this card |
 | `NOT_IN_COMBAT` | Combat ended | Stop the combat loop |
 | `COMBAT_ENDING` | Combat is resolving | Stop playing, wait for resolution |
 | `NOT_ON_REWARD_SCREEN` | Not on the reward screen | Run `./sts2 state` to check current screen |
-| `INVALID_REWARD_INDEX` | Reward index out of range | Run `./sts2 state` to get current rewards |
+| `REWARD_NOT_FOUND` | No reward matching type/ID found | Run `./sts2 state` to get available rewards |
+| `AMBIGUOUS_REWARD` | Only one item but nth≠0 specified | Use nth=0 or omit --nth |
+| `INVALID_REWARD_INDEX` | nth out of range for matching rewards | Check available count in error message |
+| `ID_MISMATCH` | Item at position doesn't match expected ID | Run `./sts2 state` to verify current state |
 | `NOT_CARD_REWARD` | Used `choose_card`/`skip_card` on non-card reward | Use `claim_reward` instead |
 | `USE_CHOOSE_CARD` | Used `claim_reward` on a card reward | Use `choose_card` or `skip_card` instead |
 | `POTION_BELT_FULL` | Potion reward but belt has no empty slots | Skip this reward or use a potion first |
