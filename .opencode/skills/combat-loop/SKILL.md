@@ -9,6 +9,25 @@ Use this skill when **starting a full combat sequence** (e.g., via `/fight` comm
 
 Execute this loop continuously until combat ends, then settle rewards.
 
+### Step 0: Initialize/Read Run State (CRITICAL)
+
+**Load the `run-state-management` skill** before every combat.
+
+Check if the game is a **new run** by examining state:
+- New character selected
+- hp = max_hp AND gold = 99 AND starter deck only
+- Act 1, Floor 0-1
+
+**If new run detected:**
+- Clear `run-state.md` and initialize with starter template
+- Set Character, Act = 1, Ascension, Build = "Early Act 1 / Undecided"
+
+**If continuing run:**
+- Read `run-state.md` for current build archetype and strategy notes
+- Use this information to inform combat decisions
+
+Proceed to Step 1.
+
 ### Step 1: Read State
 
 ```bash
@@ -119,7 +138,20 @@ When combat ends, report the outcome to the user:
 - Win: "Combat won. Player HP: X/Y."
 - Loss: "Combat lost. Player died on turn N."
 
-If the player won, proceed to Reward Settlement (below).
+If the player won, proceed to Step 6.
+
+### Step 6: Update Run State (Post-Combat)
+
+**Load the `run-state-management` skill.**
+
+After combat victory, update `run-state.md` with:
+- Combat outcome summary (turns taken, damage taken)
+- Any significant observations (new enemy patterns, deck weaknesses exposed)
+- Archetype assessment (if signals strengthened or changed)
+
+**Do NOT update archetype yet** — wait until after card rewards.
+
+Proceed to Reward Settlement.
 
 ## Reward Settlement Procedure
 
@@ -184,6 +216,52 @@ When all rewards have been claimed or skipped:
 
 Report a summary: rewards claimed (gold amount, potions, relics) and card chosen or skipped.
 
+### Step 11: Final Run State Update (Post-Rewards)
+
+**Load the `run-state-management` skill.**
+
+After all rewards are processed, update `run-state.md` with:
+
+**Always update:**
+- Deck Size: current total count
+- Relics: list current key relics
+- Potions: list current potions
+- Act: verify and update if transitioned
+
+**Update if meaningful change occurred:**
+- Build: if card pick committed to or shifted archetype
+- Key Cards: if new archetype-defining card acquired
+- Weaknesses: reassess current deck gaps
+- Notes: timestamped observations about new pickups and strategy shifts
+
+**Example format:**
+```markdown
+# Run State
+
+## Character: The Ironclad
+## Act: 1
+## Ascension: 0
+
+## Build: Exhaust + Block blend (committed)
+
+## Key Cards: Feel No Pain, Corruption, Shrug It Off, Body Slam
+
+## Deck Size: 18
+
+## Relics: Burning Blood, Orichalcum, Dead Branch
+
+## Potions: Fire Potion, Dexterity Potion
+
+## Weaknesses: No consistent scaling outside Exhaust triggers
+
+## Notes:
+- [Act 1, Floor 12]: Acquired Corruption - Exhaust engine online
+- [Act 1, Floor 12]: Picked Body Slam to convert block to damage
+- Watch for: Dark Embrace (draw on Exhaust), Second Wind (exhaust to block)
+```
+
+This completes the combat + reward settlement cycle.
+
 ## Error Recovery
 
 ### Combat Errors
@@ -217,6 +295,7 @@ On any error, always re-run `./sts2 state` before continuing.
 
 | Situation | Load Skill |
 |-----------|------------|
+| Initialize/read run state | `run-state-management` |
 | Planning individual turns | `end-state-evaluation` |
 | Evaluating enemy threats | `threat-assessment` |
 | Potion use timing | `potion-timing` |

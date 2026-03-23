@@ -11,7 +11,7 @@ When faced with a card reward (`card_choices[]` array), use this procedure to de
 
 ## Step 1: Identify Current Build Archetype
 
-Before evaluating cards, determine what archetype the deck is pursuing. Check `run-state.md` (if it exists) for a prior assessment. If not, assess now by examining the player's deck composition.
+Before evaluating cards, determine what archetype the deck is pursuing. **Load the `run-state-management` skill** and check `run-state.md` (if it exists) for a prior assessment. If not, assess now by examining the player's deck composition.
 
 The five Ironclad archetypes and their signature cards:
 
@@ -110,21 +110,12 @@ Output 1 sentence explaining the decision, referencing the archetype and reasoni
 
 ## Step 5: Update Run State (If Warranted)
 
-After making a card reward decision, consider whether the deck's archetype assessment has changed. If the pick commits the deck more firmly to an archetype (or opens a new blend), update `run-state.md`:
+After making a card reward decision, consider whether the deck's archetype assessment has changed. **Load the `run-state-management` skill.** If the pick commits the deck more firmly to an archetype (or opens a new blend), follow the skill's update procedure to modify `run-state.md`:
 
-```markdown
-# Run State
-## Build: Strength + Exhaust blend
-## Key Cards: Demon Form, Inflame, Feel No Pain, Dark Embrace
-## Deck Size: 17
-## Weaknesses: No AoE, limited draw
-## Notes: Picked Inflame from Act 2 reward. Need Whirlwind for AoE.
-```
-
-This file persists across combats and survives context compaction. Update it when:
+Key triggers for update:
 - The archetype assessment changes (e.g., picking up Corruption pivots to Exhaust)
 - A critical card is added that shifts the deck's strategy
-- The deck size crosses a threshold (15, 20, 22)
+- The deck size crosses a threshold (15, 20, 25)
 
 Do NOT update after every single reward — only on meaningful changes.
 
@@ -151,6 +142,7 @@ If the deck shows signals for two complementary archetypes, pick cards that serv
 | Situation | Load Skill |
 |-----------|------------|
 | Full combat and reward procedure | `combat-loop` |
+| Update run state after reward | `run-state-management` |
 | Potion decisions | `potion-timing` |
 
 ## Game Knowledge References

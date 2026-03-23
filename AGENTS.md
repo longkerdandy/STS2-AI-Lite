@@ -15,6 +15,7 @@ STS2-AI-Lite/
 │   │   └── combat.md            # Main combat Agent (runtime instructions)
 │   ├── skills/                  # Detailed strategy knowledge (load on demand)
 │   │   ├── combat-loop/         # Complete combat workflow
+│   │   ├── run-state-management/# Persistent run state tracking
 │   │   ├── end-state-evaluation/# Turn planning framework
 │   │   ├── threat-assessment/   # Enemy threat analysis
 │   │   ├── card-reward/         # Card reward evaluation
@@ -42,6 +43,7 @@ Type `/fight` to automatically execute a complete combat + reward settlement.
 | Need | Reference Location |
 |------|-------------------|
 | How to fight | `combat-loop` skill |
+| How to track run state | `run-state-management` skill |
 | How to plan turns | `end-state-evaluation` skill |
 | How to evaluate enemies | `threat-assessment` skill |
 | How to choose cards | `card-reward` skill + `docs/builds.md` |
@@ -55,13 +57,14 @@ Load skills to get **strategy knowledge**, read docs/ for **data reference**:
 
 | Scenario | Action |
 |----------|--------|
-| Start full combat | Load `combat-loop` skill |
+| Start full combat | Load `combat-loop` + `run-state-management` skills |
 | Encounter unfamiliar enemy | Read `docs/enemies.md` |
 | Encounter unfamiliar card | Read `docs/cards.md` |
 | Encounter unfamiliar potion | Read `docs/potions.md` |
 | Select card reward | Load `card-reward` skill + Read `docs/builds.md` |
 | Plan turn | Load `end-state-evaluation` skill |
 | Assess threat | Load `threat-assessment` skill |
+| Update run state | Load `run-state-management` skill |
 
 ### Output Format
 
