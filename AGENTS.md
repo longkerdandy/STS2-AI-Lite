@@ -22,6 +22,20 @@ STS2-AI-Lite/
 │   │   └── potion-timing/       # Potion usage timing
 │   └── commands/
 │       └── fight.md             # /fight shortcut command entry
+├── .opencode/
+│   ├── agents/
+│   │   └── combat.md            # Main combat Agent (runtime instructions)
+│   ├── skills/                  # Detailed strategy knowledge (load on demand)
+│   │   ├── combat-loop/         # Complete combat workflow
+│   │   ├── run-state-management/# Persistent run state tracking
+│   │   ├── end-state-evaluation/# Turn planning framework
+│   │   ├── threat-assessment/   # Enemy threat analysis
+│   │   ├── card-reward/         # Card reward evaluation
+│   │   └── potion-timing/       # Potion usage timing
+│   └── commands/
+│       └── fight.md             # /fight shortcut command entry
+│   └── logs/
+│       └── cli-errors.md        # CLI error log and workarounds
 └── docs/                        # Game knowledge reference (read on demand)
     ├── cli-reference.md         # CLI command manual
     ├── combat.md                # Combat mechanics
@@ -80,7 +94,13 @@ Before each action, output 1 sentence of decision reasoning in this format:
 - **Supported**: Combat + post-combat reward settlement
 - **Character**: The Ironclad only
 - **Not Supported**: Map, shop, events (CLI limitations)
-- **Language**: Use Chinese when conversing with the user, keep code and CLI commands in English
+
+## Language Policy
+
+- **中文**: 与用户对话、解释决策、战斗报告
+- **English**: 所有代码注释、技术文档、CLI 命令、run-state.md
+
+在与用户交流时使用中文。在编写或读取技术文档、执行 CLI 命令时保持英文。
 
 ## Related Projects
 

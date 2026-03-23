@@ -102,6 +102,8 @@ Potions are single-use consumables with powerful effects. Using them at the righ
 
 ## CLI Syntax
 
+### Basic Potion Usage
+
 ```bash
 # Self-targeted potions (buffs, draw, energy):
 ./sts2 use_potion <potion_id>
@@ -111,6 +113,40 @@ Potions are single-use consumables with powerful effects. Using them at the righ
 
 # Check potions[].target_type to know if --target is needed
 ```
+
+### Selection Potions (NEW)
+
+Some potions require selecting cards after use. When using these, the game enters `POTION_SELECTION` screen.
+
+**Usage workflow:**
+```bash
+# 1. Use the potion
+./sts2 use_potion LIQUID_MEMORIES
+
+# 2. Check state - screen should be "POTION_SELECTION"
+./sts2 state
+
+# 3. Select card(s) from the available options
+./sts2 potion_select_card <card_id>                    # Select 1 card
+./sts2 potion_select_card STRIKE --nth 0 BASH --nth 1  # Select multiple
+
+# 4. Or skip if allowed
+./sts2 potion_select_skip                              # Skip selection
+
+# 5. Verify return to combat
+./sts2 state
+```
+
+**Selection potion types:**
+- `ATTACK_POTION`, `SKILL_POTION`, `POWER_POTION` - Choose 1 of 3 cards
+- `COLORLESS_POTION` - Choose 1 of 3 (can skip)
+- `LIQUID_MEMORIES` - Choose 1 from discard pile
+- `DROPLET_OF_PRECOGNITION` - Choose 1 from draw pile
+- `GAMBLERS_BREW` - Choose 0-N from hand (multi-select, can skip)
+- `ASHWATER` - Choose 1-N from hand (multi-select)
+- `TOUCH_OF_INSANITY` - Choose 1 from hand
+
+**Important:** Selection potions may fail or cause TUI glitches. If `use_potion` times out or screen shows `POTION_SELECTION` but selection fails, document in `.opencode/logs/cli-errors.md`.
 
 ## Related Skills
 

@@ -66,10 +66,10 @@ Examples:
 
 End the current turn. The response contains all enemy action results (damage dealt, buffs applied, etc.).
 
-### claim_reward
+### reward_claim
 
 ```
-./sts2 claim_reward --type <type> [--id <id>] [--nth <n>]
+./sts2 reward_claim --type <type> [--id <id>] [--nth <n>]
 ```
 
 Claim a non-card reward by **type and optional ID**.
@@ -80,18 +80,18 @@ Claim a non-card reward by **type and optional ID**.
 
 Examples:
 ```bash
-./sts2 claim_reward --type gold                                   # Claim gold reward
-./sts2 claim_reward --type potion --id FIRE_POTION               # Claim Fire Potion
-./sts2 claim_reward --type relic --id BURNING_BLOOD              # Claim specific relic
-./sts2 claim_reward --type potion --id FIRE_POTION --nth 1       # Claim 2nd Fire Potion
+./sts2 reward_claim --type gold                                   # Claim gold reward
+./sts2 reward_claim --type potion --id FIRE_POTION               # Claim Fire Potion
+./sts2 reward_claim --type relic --id BURNING_BLOOD              # Claim specific relic
+./sts2 reward_claim --type potion --id FIRE_POTION --nth 1       # Claim 2nd Fire Potion
 ```
 
-For card rewards, use `choose_card` instead (returns `USE_CHOOSE_CARD` error if attempted on a card reward).
+For card rewards, use `reward_choose_card` instead (returns `USE_CHOOSE_CARD` error if attempted on a card reward).
 
-### choose_card
+### reward_choose_card
 
 ```
-./sts2 choose_card --type card --card_id <card_id> [--nth <n>]
+./sts2 reward_choose_card --type card --card_id <card_id> [--nth <n>]
 ```
 
 Pick a specific card from a card reward by **card ID**.
@@ -102,14 +102,14 @@ Pick a specific card from a card reward by **card ID**.
 
 Example:
 ```bash
-./sts2 choose_card --type card --card_id STRIKE_IRONCLAD          # Select from 1st card reward
-./sts2 choose_card --type card --card_id STRIKE_IRONCLAD --nth 1  # Select from 2nd card reward
+./sts2 reward_choose_card --type card --card_id STRIKE_IRONCLAD          # Select from 1st card reward
+./sts2 reward_choose_card --type card --card_id STRIKE_IRONCLAD --nth 1  # Select from 2nd card reward
 ```
 
-### skip_card
+### reward_skip_card
 
 ```
-./sts2 skip_card --type card [--nth <n>]
+./sts2 reward_skip_card --type card [--nth <n>]
 ```
 
 Skip a card reward — take nothing.
@@ -119,17 +119,105 @@ Skip a card reward — take nothing.
 
 Example:
 ```bash
-./sts2 skip_card --type card              # Skip 1st card reward
-./sts2 skip_card --type card --nth 1      # Skip 2nd card reward
+./sts2 reward_skip_card --type card              # Skip 1st card reward
+./sts2 reward_skip_card --type card --nth 1      # Skip 2nd card reward
 ```
 
-### proceed
+### choose_event
 
 ```
-./sts2 proceed
+./sts2 choose_event <index>
+```
+
+Choose an option in an event room by **0-based index**.
+
+- **index**: Option index in the event's options list (0-based)
+
+Examples:
+```bash
+./sts2 choose_event 0                    # Choose first option
+./sts2 choose_event 1                    # Choose second option
+```
+
+For Ancient events, use `advance_dialogue` first if `is_in_dialogue` is true.
+
+### advance_dialogue
+
+```
+./sts2 advance_dialogue [--auto]
+```
+
+Advance dialogue in an **Ancient event**.
+
+Ancient events have a dialogue phase before options appear. Use this command to click through the dialogue.
+
+- **--auto**: Automatically advance all dialogue lines until options appear
+
+Examples:
+```bash
+./sts2 advance_dialogue                   # Advance one dialogue line
+./sts2 advance_dialogue --auto           # Auto-advance to options
+```
+
+**Workflow for Ancient events**:
+1. Check `sts2 state` - if `layout_type` is "Ancient" and `is_in_dialogue` is true
+2. Run `advance_dialogue --auto` to skip to options
+3. Then use `choose_event <index>` to select an option
+
+### reward_proceed
+
+```
+./sts2 reward_proceed
 ```
 
 Leave the reward screen and proceed to the map. Any unclaimed rewards are automatically skipped.
+
+### potion_select_card
+
+```
+./sts2 potion_select_card <card_id> [<card_id>...] [--nth <n>...]
+```
+
+Select cards from a potion-opened card selection screen. Used when potions like Liquid Memories, Gambler's Brew, etc. open a selection interface.
+
+- **card_id**: One or more card identifiers to select
+- **--nth**: N-th occurrence for each card ID (0-based, optional, defaults to 0 for each card)
+
+Examples:
+```bash
+./sts2 potion_select_card BASH                                    # Select Bash
+./sts2 potion_select_card STRIKE --nth 0 DEFEND --nth 1          # Select Strike (1st) and Defend (2nd)
+```
+
+**Workflow for selection potions**:
+1. Use `use_potion <potion_id>` (e.g., `LIQUID_MEMORIES`, `GAMBLERS_BREW`)
+2. Check response for `status: "selection_required"` with available cards
+3. Use `potion_select_card <card_id>` to select cards
+4. Use `state` to confirm return to `COMBAT` screen
+
+**Supported selection potions**:
+- `ATTACK_POTION`, `SKILL_POTION`, `POWER_POTION` - Choose 1 of 3 cards
+- `COLORLESS_POTION` - Choose 1 of 3 (can skip)
+- `LIQUID_MEMORIES` - Choose 1 from discard pile
+- `DROPLET_OF_PRECOGNITION` - Choose 1 from draw pile
+- `GAMBLERS_BREW` - Choose 0-N from hand (multi-select, can skip)
+- `ASHWATER` - Choose 1-N from hand (multi-select)
+- `TOUCH_OF_INSANITY` - Choose 1 from hand
+
+### potion_select_skip
+
+```
+./sts2 potion_select_skip
+```
+
+Skip the current potion card selection (if the potion allows skipping).
+
+Some potions like `COLORLESS_POTION` and `GAMBLERS_BREW` allow skipping the selection. This command clicks the skip button to proceed without selecting any cards.
+
+Example:
+```bash
+./sts2 potion_select_skip          # Skip the potion card selection
+```
 
 ## Exit Codes
 
@@ -162,7 +250,7 @@ Returned by `./sts2 state` in the `data` field.
 
 ```
 data
-├── screen              # "COMBAT", "REWARD", "CARD_REWARD", "MAP", "MENU", "UNKNOWN"
+├── screen              # "COMBAT", "REWARD", "CARD_REWARD", "EVENT", "POTION_SELECTION", "MAP", "MENU", "UNKNOWN"
 ├── timestamp           # Unix timestamp (ms)
 ├── combat              # null when not in combat
 │   ├── encounter       # encounter ID (e.g., "jaw_worm")
@@ -333,6 +421,141 @@ Returned by `./sts2 state` in the `data.rewards` field when screen is `REWARD`.
 }
 ```
 
+### Event State Structure
+
+Returned by `./sts2 state` in the `data.event` field when screen is `EVENT`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event_id` | string | Event identifier (e.g., "BIG_FISH") |
+| `title` | string | Localized event title |
+| `description` | string | Localized event description (current page) |
+| `layout_type` | string | "Default", "Combat", "Ancient", "Custom" |
+| `is_finished` | bool | Whether the event has concluded |
+| `is_in_dialogue` | bool | **Ancient events only**: True when dialogue is in progress |
+| `current_dialogue_line` | int | **Ancient events only**: Current dialogue line index (0-based) |
+| `total_dialogue_lines` | int | **Ancient events only**: Total number of dialogue lines |
+| `options` | array | Current available options (empty during Ancient dialogue) |
+
+### Event Option Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `index` | int | 0-based index for `choose_event` |
+| `title` | string | Localized option text |
+| `description` | string | Localized option description/tooltip |
+| `is_locked` | bool | Cannot be selected (OnChosen == null) |
+| `is_proceed` | bool | Final "proceed to map" option |
+| `relic_id` | string | Relic ID if option shows a relic |
+
+### JSON Example (Event Screen)
+
+```json
+{
+  "ok": true,
+  "data": {
+    "screen": "EVENT",
+    "timestamp": 1711123456789,
+    "event": {
+      "event_id": "BIG_FISH",
+      "title": "Big Fish",
+      "description": "You find a large fish flopping on the riverbank...",
+      "layout_type": "Default",
+      "is_finished": false,
+      "is_in_dialogue": false,
+      "options": [
+        {
+          "index": 0,
+          "title": "[Eat] Heal 5 HP.",
+          "description": "Heal 5 HP.",
+          "is_locked": false,
+          "is_proceed": false
+        }
+      ]
+    }
+  }
+}
+```
+
+### JSON Example (Ancient Event in Dialogue)
+
+```json
+{
+  "ok": true,
+  "data": {
+    "screen": "EVENT",
+    "event": {
+      "event_id": "ANCIENT_EXAMPLE",
+      "title": "Ancient One",
+      "layout_type": "Ancient",
+      "is_in_dialogue": true,
+      "current_dialogue_line": 0,
+      "total_dialogue_lines": 3,
+      "options": []
+    }
+  }
+}
+```
+
+### Potion Selection State Structure
+
+Returned by `./sts2 state` in the `data.potion_selection` field when screen is `POTION_SELECTION`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `selection_type` | string | Type of selection: `choose_from_pool`, `choose_from_discard`, `choose_from_draw`, `choose_from_hand` |
+| `min_select` | int | Minimum number of cards to select |
+| `max_select` | int | Maximum number of cards to select |
+| `can_skip` | bool | Whether the player can skip this selection |
+| `cards` | array | Available cards to choose from |
+
+### Selectable Card Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `index` | int | 0-based position in selection screen |
+| `card_id` | string | Card identifier (use with `potion_select_card`) |
+| `card_name` | string | Display name |
+| `description` | string | Card effect text |
+| `card_type` | string | `Attack`, `Skill`, `Power`, `Status`, `Curse` |
+| `cost` | int | Energy cost |
+
+### JSON Example (Potion Selection Screen)
+
+```json
+{
+  "ok": true,
+  "data": {
+    "screen": "POTION_SELECTION",
+    "timestamp": 1711123456789,
+    "potion_selection": {
+      "selection_type": "choose_from_discard",
+      "min_select": 1,
+      "max_select": 1,
+      "can_skip": false,
+      "cards": [
+        {
+          "index": 0,
+          "card_id": "STRIKE",
+          "card_name": "Strike",
+          "description": "Deal 6 damage.",
+          "card_type": "Attack",
+          "cost": 1
+        },
+        {
+          "index": 1,
+          "card_id": "BASH",
+          "card_name": "Bash",
+          "description": "Deal 8 damage. Apply 2 Vulnerable.",
+          "card_type": "Attack",
+          "cost": 2
+        }
+      ]
+    }
+  }
+}
+```
+
 ## Action Results
 
 After `play_card`, `end_turn`, and `use_potion`, the response `data` includes a `results` array:
@@ -353,6 +576,10 @@ After `play_card`, `end_turn`, and `use_potion`, the response `data` includes a 
 - `damage` and `block` on cards are **preview values** after all modifiers (strength, vulnerable, etc.).
 - `intents[].damage` is **per-hit**; multiply by `intents[].hits` for total incoming damage.
 - After `end_turn`, the response contains all enemy actions -- always read it.
+- **Ancient events**: Use `is_in_dialogue` field to detect dialogue phase. Run `advance_dialogue --auto` before `choose_event`.
+- **Event workflow**: For Ancient events: check `is_in_dialogue` → `advance_dialogue --auto` → wait → `choose_event`.
+- **Selection potions**: Some potions (Liquid Memories, Gambler's Brew, etc.) open card selection screens. When using these potions, check for `status: "selection_required"` response, then use `potion_select_card` or `potion_select_skip`.
+- **Potion selection workflow**: Use `use_potion` → check for `POTION_SELECTION` screen → use `potion_select_card <card_id>` or `potion_select_skip` → confirm return to `COMBAT`.
 
 ## Error Handling
 
@@ -368,11 +595,19 @@ After `play_card`, `end_turn`, and `use_potion`, the response `data` includes a 
 | `AMBIGUOUS_REWARD` | Only one item but nth≠0 specified | Use nth=0 or omit --nth |
 | `INVALID_REWARD_INDEX` | nth out of range for matching rewards | Check available count in error message |
 | `ID_MISMATCH` | Item at position doesn't match expected ID | Run `./sts2 state` to verify current state |
-| `NOT_CARD_REWARD` | Used `choose_card`/`skip_card` on non-card reward | Use `claim_reward` instead |
-| `USE_CHOOSE_CARD` | Used `claim_reward` on a card reward | Use `choose_card` or `skip_card` instead |
+| `NOT_CARD_REWARD` | Used `reward_choose_card`/`reward_skip_card` on non-card reward | Use `reward_claim` instead |
+| `USE_CHOOSE_CARD` | Used `reward_claim` on a card reward | Use `reward_choose_card` or `reward_skip_card` instead |
 | `POTION_BELT_FULL` | Potion reward but belt has no empty slots | Skip this reward or use a potion first |
 | `NOT_SUPPORTED` | Reward type not yet supported (e.g., CardRemoval) | Skip this reward |
 | `CLAIM_FAILED` | Reward claim failed for unknown reason | Run `./sts2 state` to refresh and retry |
+| `NOT_ANCIENT_EVENT` | Tried `advance_dialogue` on non-Ancient event | Check `layout_type` in event state |
+| `NOT_IN_DIALOGUE` | Ancient event dialogue already finished | Use `choose_event` directly |
+| `NOT_IN_POTION_SELECTION` | Not in potion card selection screen | Check current screen with `state` |
+| `CANNOT_SKIP` | This potion selection cannot be skipped | Must select required cards |
+| `SKIP_BUTTON_NOT_FOUND` | Skip button not found on selection screen | Use `potion_select_card` instead |
+| `INVALID_SELECTION_COUNT` | Wrong number of cards selected | Check `min_select`/`max_select` in state |
+| `DUPLICATE_SELECTION` | Same card selected multiple times | Ensure unique card IDs |
+| `NO_CARDS_AVAILABLE` | No cards found in selection screen | Check potion state |
 | `CONNECTION_ERROR` | Game disconnected | Report to user and stop |
 
 On any error, run `./sts2 state` to refresh state before continuing.

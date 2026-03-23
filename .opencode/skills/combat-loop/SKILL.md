@@ -104,9 +104,23 @@ For potions:
 ./sts2 use_potion <potion_id>                         # self-targeted potions
 ```
 
+**For selection potions** (Gambler's Brew, Liquid Memories, etc.):
+```bash
+# 1. Use potion - this may return selection_required or change screen
+./sts2 use_potion GAMBLERS_BREW
+
+# 2. If screen becomes POTION_SELECTION, use potion_select_card
+./sts2 potion_select_card <card_id> [<card_id>...]   # Select specific cards
+./sts2 potion_select_skip                             # Or skip if allowed
+
+# 3. Always verify state returns to COMBAT
+./sts2 state
+```
+
 After each action, briefly verify the result JSON:
 - Check `results[]` for damage dealt, block gained, etc.
 - If a kill occurred (`killed: true`), note the enemy is dead.
+- If `status: "selection_required"` appears, handle potion selection before continuing.
 
 ### Step 5: End Turn
 
@@ -290,6 +304,32 @@ This completes the combat + reward settlement cycle.
 | `CONNECTION_ERROR` | Stop, report connection failure |
 
 On any error, always re-run `./sts2 state` before continuing.
+
+### CLI Error Logging
+
+When encountering potential CLI MOD bugs or limitations, **record in `.opencode/logs/cli-errors.md`**:
+
+| Issue Type | Log? | Notes |
+|------------|------|-------|
+| TIMEOUT on potion use | **YES** | Especially interactive potions (Gambler's Brew) |
+| TUI blank line floods | **YES** | Visual glitch during debuff/potion animations |
+| ACTION_CANCELLED after timeout | **YES** | State desync after error |
+| Successful API but wrong visual | **YES** | API says ok:true but game shows different |
+| POTION_SELECTION screen stuck | **YES** | TUI frozen during card selection |
+| CANNOT_PLAY_CARD (energy/valid) | NO | Expected game logic |
+| NOT_IN_COMBAT / COMBAT_ENDING | NO | Expected state transitions |
+
+**Log format:**
+```markdown
+### YYYY-MM-DD: Description
+- **Command**: What was executed
+- **Error Type**: TIMEOUT / TUI_GLITCH / ACTION_CANCELLED
+- **Context**: Turn X vs Enemy
+- **Workaround**: How resolved
+- **Status**: OPEN
+```
+
+See `cli-errors.md` for examples and full recovery protocols.
 
 ## Related Skills
 
