@@ -9,7 +9,7 @@ Use this skill to **manage the run-state.md file** — a persistent record of th
 
 ## File Location
 
-`/home/longkerdandy/STS2-AI-Lite/run-state.md`
+`./run-state.md`
 
 ## Reset Detection (CRITICAL)
 
@@ -24,26 +24,26 @@ A run restart is detected when ANY of the following change:
 **If reset detected:**
 ```bash
 # Clear the run-state.md file and start fresh
-> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "# Run State" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Character: The Ironclad" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Act: 1" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Ascension: 0" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Build: Early Act 1 / Undecided" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Key Cards: None yet" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Deck Size: 10 (starter)" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Relics: Burning Blood" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Potions: None" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Weaknesses: Basic starter deck - needs damage, AoE, scaling" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "" >> /home/longkerdandy/STS2-AI-Lite/run-state.md
-echo "## Notes: New run started. Looking for archetype signals." >> /home/longkerdandy/STS2-AI-Lite/run-state.md
+> ./run-state.md
+echo "# Run State" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Character: The Ironclad" >> ./run-state.md
+echo "## Act: 1" >> ./run-state.md
+echo "## Ascension: 0" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Build: Early Act 1 / Undecided" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Key Cards: None yet" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Deck Size: 10 (starter)" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Relics: Burning Blood" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Potions: None" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Weaknesses: Basic starter deck - needs damage, AoE, scaling" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Notes: New run started. Looking for archetype signals." >> ./run-state.md
 ```
 
 ## Standard File Format
@@ -220,8 +220,10 @@ Use checkboxes to track which archetypes show signals in the current deck.
 
 | Skill | Integration Point |
 |-------|-------------------|
-| **combat-loop** | Step 0: Read run-state; After combat: Update if meaningful change |
+| **combat-loop** | Step 0: Read run-state; After combat: Update Notes if meaningful |
 | **card-reward** | Before evaluation: Read archetype; After: Update if archetype shifts |
+| **deck-building agent** | All deck-mutation screens: update after card/relic/shop changes |
+| **game-master agent** | Update Act/floor progression after map transitions |
 | **end-state-evaluation** | Consider archetype patterns when generating candidate sequences |
 | **threat-assessment** | Use archetype to determine kill priority (e.g., Exhaust decks can afford longer fights) |
 

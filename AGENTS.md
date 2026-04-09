@@ -1,6 +1,6 @@
 # AGENTS.md - STS2-AI-Lite Master Document
 
-AI player project that interacts with Slay the Spire 2 via the `./sts2` CLI.
+AI player project that interacts with Slay the Spire 2 via the `./sts2` CLI. Supports full automated runs from map navigation through combat, rewards, shops, events, and rest sites.
 
 ## Project Structure
 
@@ -12,32 +12,25 @@ STS2-AI-Lite/
 ├── run-state.md                 # Current runtime state (temporary file)
 ├── .opencode/
 │   ├── agents/
-│   │   └── combat.md            # Main combat Agent (runtime instructions)
-│   ├── skills/                  # Detailed strategy knowledge (load on demand)
-│   │   ├── combat-loop/         # Complete combat workflow
+│   │   ├── game-master.md       # Primary orchestrator (state routing, map, events, lifecycle)
+│   │   ├── combat.md            # Combat subagent (fighting + combat sub-states)
+│   │   └── deck-building.md     # Deck-building subagent (rewards, shop, rest site, card selection)
+│   ├── skills/
+│   │   ├── combat-loop/         # Combat execution workflow
 │   │   ├── run-state-management/# Persistent run state tracking
 │   │   ├── end-state-evaluation/# Turn planning framework
 │   │   ├── threat-assessment/   # Enemy threat analysis
 │   │   ├── card-reward/         # Card reward evaluation
-│   │   └── potion-timing/       # Potion usage timing
-│   └── commands/
-│       └── fight.md             # /fight shortcut command entry
-├── .opencode/
-│   ├── agents/
-│   │   └── combat.md            # Main combat Agent (runtime instructions)
-│   ├── skills/                  # Detailed strategy knowledge (load on demand)
-│   │   ├── combat-loop/         # Complete combat workflow
-│   │   ├── run-state-management/# Persistent run state tracking
-│   │   ├── end-state-evaluation/# Turn planning framework
-│   │   ├── threat-assessment/   # Enemy threat analysis
-│   │   ├── card-reward/         # Card reward evaluation
-│   │   └── potion-timing/       # Potion usage timing
-│   └── commands/
-│       └── fight.md             # /fight shortcut command entry
+│   │   ├── potion-timing/       # Potion usage timing
+│   │   ├── map-pathing/         # Map node evaluation and selection
+│   │   ├── shop-evaluation/     # Shop purchase decisions
+│   │   └── rest-site-tactics/   # Rest site heal vs smith vs dig
+│   ├── commands/
+│   │   └── play.md              # /play — full auto-play command
 │   └── logs/
 │       └── cli-errors.md        # CLI error log and workarounds
 └── docs/                        # Game knowledge reference (read on demand)
-    ├── cli-reference.md         # CLI command manual
+    ├── cli-reference.md         # CLI command manual (40+ commands, 18 screen types)
     ├── combat.md                # Combat mechanics
     ├── characters.md            # Character data
     ├── cards.md                 # Card data
@@ -47,53 +40,82 @@ STS2-AI-Lite/
     └── builds.md                # Build strategies
 ```
 
+## Architecture
+
+### Agent Hierarchy
+
+```
+Game Master (Primary) — state routing, map, events, treasure, crystal sphere, lifecycle
+├── Combat Agent (Subagent) — combat execution, HAND_SELECT, TRI_SELECT sub-states
+└── Deck-Building Agent (Subagent) — rewards, shop, rest site, card/relic selection
+```
+
+### Screen Routing
+
+| Screen | Handler |
+|--------|---------|
+| `MAP` | Game Master (map-pathing skill) |
+| `COMBAT`, `HAND_SELECT` | Combat Agent |
+| `REWARD`, `CARD_REWARD`, `SHOP`, `REST_SITE` | Deck-Building Agent |
+| `GRID_CARD_SELECT`, `RELIC_SELECT`, `BUNDLE_SELECT` | Deck-Building Agent |
+| `EVENT` | Game Master (simple) / Deck-Building (card-related) |
+| `TREASURE`, `CRYSTAL_SPHERE` | Game Master |
+| `TRI_SELECT` | Context-dependent (Combat or Deck-Building) |
+| `MENU`, `CHARACTER_SELECT`, `GAME_OVER` | Game Master |
+
 ## Usage Guide
 
-### Starting Combat
-Type `/fight` to automatically execute a complete combat + reward settlement.
+### Full Auto-Play
+Type `/play` to run the game from current state to game over automatically.
 
 ### Documentation Hierarchy
 
 | Need | Reference Location |
 |------|-------------------|
+| How to run full game | `game-master.md` agent |
 | How to fight | `combat-loop` skill |
+| How to build deck | `deck-building.md` agent |
+| How to navigate map | `map-pathing` skill |
+| How to shop | `shop-evaluation` skill |
+| How to rest | `rest-site-tactics` skill |
 | How to track run state | `run-state-management` skill |
 | How to plan turns | `end-state-evaluation` skill |
 | How to evaluate enemies | `threat-assessment` skill |
-| How to choose cards | `card-reward` skill + `docs/builds.md` |
+| How to choose card rewards | `card-reward` skill + `docs/builds.md` |
 | When to use potions | `potion-timing` skill |
 | CLI command details | `docs/cli-reference.md` |
 | Card/enemy/relic data | Corresponding files under `docs/` |
 
 ### Skill Loading Rules
 
-Load skills to get **strategy knowledge**, read docs/ for **data reference**:
+Load skills for **strategy knowledge**, read docs/ for **data reference**:
 
 | Scenario | Action |
 |----------|--------|
-| Start full combat | Load `combat-loop` + `run-state-management` skills |
-| Encounter unfamiliar enemy | Read `docs/enemies.md` |
-| Encounter unfamiliar card | Read `docs/cards.md` |
-| Encounter unfamiliar potion | Read `docs/potions.md` |
-| Select card reward | Load `card-reward` skill + Read `docs/builds.md` |
+| Start full combat | Load `combat-loop` skill |
 | Plan turn | Load `end-state-evaluation` skill |
+| Navigate map | Load `map-pathing` skill |
+| Enter shop | Load `shop-evaluation` skill |
+| Enter rest site | Load `rest-site-tactics` skill |
+| Select card reward | Load `card-reward` skill + Read `docs/builds.md` |
 | Assess threat | Load `threat-assessment` skill |
 | Update run state | Load `run-state-management` skill |
+| Unfamiliar enemy/card/relic | Read corresponding `docs/` file |
 
 ### Output Format
 
-Before each action, output 1 sentence of decision reasoning in this format:
+Before each action, output 1 sentence of decision reasoning:
 
 ```
 [Jaw Worm intent 11 damage, I have 80 HP 0 block, play Strike for 8 damage]
 > ./sts2 play_card STRIKE_IRONCLAD --target 1
 ```
 
-## Scope and Limitations
+## Scope
 
-- **Supported**: Combat + post-combat reward settlement
+- **Supported**: Full game flow — map, combat, rewards, shop, rest site, events, treasure, crystal sphere
 - **Character**: The Ironclad only
-- **Not Supported**: Map, shop, events (CLI limitations)
+- **CLI**: 40+ commands, 18 screen types (via STS2-Cli-Mod)
 
 ## Language Policy
 
