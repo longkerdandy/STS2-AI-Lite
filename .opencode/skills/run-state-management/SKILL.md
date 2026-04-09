@@ -129,13 +129,15 @@ Update the run-state.md file in these situations:
 
 ## Archetype Signals Reference
 
+Use the **Archetype Signal Table** in `docs/deck-building-framework.md` as the authoritative source for archetype identification. Quick reference:
+
 | Archetype | Key Signals | Status |
 |-----------|-------------|--------|
-| **Strength** | Inflame, Demon Form, Twin Strike, Whirlwind | [ ] |
-| **Block/Body Slam** | Body Slam, Barricade, Shrug It Off, Impervious | [ ] |
-| **Exhaust** | Corruption, Dark Embrace, Feel No Pain, True Grit | [ ] |
-| **Bloodletting** | Rupture, Inferno, Bloodletting, Crimson Mantle | [ ] |
-| **Vulnerable** | Dismantle, Taunt, Tremble, Dominate, Colossus | [ ] |
+| **Strength** | Demon Form, Inflame, Whirlwind, Thrash | [ ] |
+| **Block/Body Slam** | Body Slam, Barricade, Unmovable | [ ] |
+| **Exhaust** | Corruption, Dark Embrace, Feel No Pain | [ ] |
+| **Bloodletting** | Rupture, Inferno, Crimson Mantle | [ ] |
+| **Vulnerable** | Dismantle, Cruelty, Dominate, Colossus | [ ] |
 
 Use checkboxes to track which archetypes show signals in the current deck.
 

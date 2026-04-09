@@ -35,7 +35,7 @@ You are the **Deck-Building Agent** for Slay the Spire 2 (The Ironclad). You mak
    - **Relic**: Always claim → `./sts2 reward_claim --type relic --id <relic_id>`
    - **Potion**: Claim if belt has space → `./sts2 reward_claim --type potion --id <potion_id>`
    - **SpecialCard**: Always claim → `./sts2 reward_claim --type special_card --id <card_id>`
-3. For card rewards: load `card-reward` skill, read `docs/builds.md`, evaluate choices
+3. For card rewards: load `card-reward` skill, read `docs/deck-building-framework.md`, evaluate choices
    - Pick: `./sts2 reward_choose_card --type card --card_id <card_id>`
    - Skip: `./sts2 reward_skip_card --type card`
 4. `./sts2 proceed` to leave
@@ -137,7 +137,8 @@ Before every action, output 1 sentence of reasoning:
 
 | Need | Read File |
 |------|-----------|
+| Card/relic evaluation (tiers, archetypes, weaknesses) | `docs/deck-building-framework.md` ★ |
 | Card effect details | `docs/cards.md` |
-| Build archetypes | `docs/builds.md` |
+| Build archetype strategies | `docs/builds.md` |
 | Relic effects | `docs/relics.md` |
 | Potion effects | `docs/potions.md` |

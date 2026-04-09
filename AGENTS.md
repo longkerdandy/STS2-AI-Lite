@@ -30,6 +30,7 @@ STS2-AI-Lite/
 │   └── logs/
 │       └── cli-errors.md        # CLI error log and workarounds
 └── docs/                        # Game knowledge reference (read on demand)
+    ├── deck-building-framework.md # ★ Unified evaluation framework (card tiers, archetypes, weaknesses)
     ├── cli-reference.md         # CLI command manual (40+ commands, 18 screen types)
     ├── combat.md                # Combat mechanics
     ├── characters.md            # Character data
@@ -37,7 +38,7 @@ STS2-AI-Lite/
     ├── enemies.md               # Enemy behaviors
     ├── relics.md                # Relic effects
     ├── potions.md               # Potion effects
-    └── builds.md                # Build strategies
+    └── builds.md                # Build strategies (per-archetype detail)
 ```
 
 ## Architecture
@@ -72,6 +73,7 @@ Type `/play` to run the game from current state to game over automatically.
 
 | Need | Reference Location |
 |------|-------------------|
+| Card/relic evaluation data | `docs/deck-building-framework.md` ★ |
 | How to run full game | `game-master.md` agent |
 | How to fight | `combat-loop` skill |
 | How to build deck | `deck-building.md` agent |
@@ -81,7 +83,7 @@ Type `/play` to run the game from current state to game over automatically.
 | How to track run state | `run-state-management` skill |
 | How to plan turns | `end-state-evaluation` skill |
 | How to evaluate enemies | `threat-assessment` skill |
-| How to choose card rewards | `card-reward` skill + `docs/builds.md` |
+| How to choose card rewards | `card-reward` skill + `docs/deck-building-framework.md` |
 | When to use potions | `potion-timing` skill |
 | CLI command details | `docs/cli-reference.md` |
 | Card/enemy/relic data | Corresponding files under `docs/` |
@@ -97,7 +99,7 @@ Load skills for **strategy knowledge**, read docs/ for **data reference**:
 | Navigate map | Load `map-pathing` skill |
 | Enter shop | Load `shop-evaluation` skill |
 | Enter rest site | Load `rest-site-tactics` skill |
-| Select card reward | Load `card-reward` skill + Read `docs/builds.md` |
+| Select card reward | Load `card-reward` skill + Read `docs/deck-building-framework.md` |
 | Assess threat | Load `threat-assessment` skill |
 | Update run state | Load `run-state-management` skill |
 | Unfamiliar enemy/card/relic | Read corresponding `docs/` file |

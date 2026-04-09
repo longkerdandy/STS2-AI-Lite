@@ -274,57 +274,13 @@ If you see strong overlap (e.g., Feel No Pain + Body Slam), blend those archetyp
 
 ---
 
-## Card Reward Decision Framework
+## Evaluation Framework
 
-When evaluating card rewards, follow this priority:
-
-### 1. Does it fit the core archetype?
-
-If you've committed to a build, take cards that strengthen it. Skip cards for other archetypes unless they provide universal value.
-
-### 2. Does it solve a weakness?
-
-| Weakness | Solution |
-|----------|----------|
-| No AoE | Whirlwind, Breakthrough, Conflagration |
-| No scaling | Demon Form, Rupture, Inflame |
-| No Block | Shrug It Off, Impervious, Blood Wall |
-| No draw | Offering, Battle Trance, Pommel Strike, Burning Pact |
-| No energy | Bloodletting, Forgotten Ritual, Offering |
-| Deck too fat | Skip the card. Lean decks win. |
-
-### 3. Universal S-tier cards (take in any build)
-
-These cards are strong regardless of archetype:
-
-- **Offering**: Energy + draw + self-damage trigger. Best Ironclad card.
-- **Feed**: Max HP gain. Always valuable early/mid game.
-- **Demon Form**: Strength scaling fits any build.
-- **Thrash**: Multi-hit, flexible, self-scaling.
-- **Battle Trance**: Draw 3 cards. Universally useful.
-- **Headbutt**: Damage + deck manipulation.
-- **Brand**: Deck thinning + self-damage trigger.
-- **Break**: High damage + Vulnerable application. (Ancient card)
-
-### 4. When to SKIP
-
-- Deck is 20+ cards and the offered card is merely "good"
-- Card doesn't match your archetype and isn't S-tier
-- Card is expensive (2-3 energy) and you have no energy support
-- You already have enough of that effect (e.g., 3rd copy of Inflame)
-
-## Act-by-Act Priorities
-
-| Act | Priority | Reasoning |
-|-----|----------|-----------|
-| Act 1 | Damage, AoE, card draw, early Vulnerable | Act 1 is a damage race. Kill fast before enemies scale. Take strong commons. |
-| Act 2 | Scaling, key powers, archetype-defining cards | Enemies hit harder but fights are longer. Need engines (Demon Form, Corruption, Rupture). |
-| Act 3+ | Be selective. Only take cards that solve problems. | Deck should be lean and consistent. Skip mediocre cards. Quality over quantity. |
+For card tiers, weakness mapping, upgrade priority, deck size rules, and gold efficiency, see `docs/deck-building-framework.md`. That document is the single source of truth for all evaluation logic used by the card-reward, shop-evaluation, and rest-site-tactics skills.
 
 ## General Tips
 
-- **Burning Blood** heals 6 HP after each combat. This means taking some damage to deal more damage is often correct.
-- **Upgrade priority**: Upgrade archetype-defining cards first (Bash for Vulnerable, Rupture for Bloodletting, Body Slam to cost 0).
+- **Burning Blood** heals 6 HP after each combat. Taking some damage to deal more damage is often correct.
 - **Remove Strikes**: At shops, removing basic Strikes improves deck consistency significantly.
 - **Don't over-draft attacks**: A hand full of attacks with no Block is lethal. Maintain balance.
 - **Energy relics**: Any relic that gives extra energy is valuable in every build.
