@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# sts2 — Cross-platform wrapper for STS2-Cli-Mod CLI
+# Works on Linux, macOS, and WSL. For Windows native, use sts2.cmd instead.
+#
+# Resolution order:
+#   1. STS2_CLI_DIR environment variable (explicit override)
+#   2. Standard install paths per platform
+
+set -euo pipefail
+
+find_sts2() {
+    # 1. Explicit override via environment variable
+    if [[ -n "${STS2_CLI_DIR:-}" ]]; then
+        local candidate="$STS2_CLI_DIR/sts2"
+        # On WSL or if .exe exists, prefer the .exe
+        if [[ -f "$candidate.exe" ]]; then
+            echo "$candidate.exe"
+            return 0
+        elif [[ -f "$candidate" ]]; then
+            echo "$candidate"
+            return 0
+        fi
+    fi
+
+    # 2. Detect platform and check standard install paths
+    local os
+    os="$(uname -s)"
+
+    case "$os" in
+        Linux)
+            # Check if running under WSL
+            if grep -qiE '(microsoft|wsl)' /proc/version 2>/dev/null; then
+                # WSL: CLI must be the Windows exe (named pipe requires Windows binary)
+                # Standard deploy path: /mnt/c/Users/<user>/AppData/Local/sts2-cli/sts2.exe
+                local win_appdata
+                win_appdata="$(wslpath "$(cmd.exe /C 'echo %LOCALAPPDATA%' 2>/dev/null | tr -d '\r')" 2>/dev/null)" || true
+                if [[ -n "$win_appdata" && -f "$win_appdata/sts2-cli/sts2.exe" ]]; then
+                    echo "$win_appdata/sts2-cli/sts2.exe"
+                    return 0
+                fi
+                # Fallback: common WSL path pattern
+                for userdir in /mnt/c/Users/*/AppData/Local/sts2-cli; do
+                    if [[ -f "$userdir/sts2.exe" ]]; then
+                        echo "$userdir/sts2.exe"
+                        return 0
+                    fi
+                done
+            else
+                # Native Linux: ~/.local/bin/sts2
+                if [[ -f "$HOME/.local/bin/sts2" ]]; then
+                    echo "$HOME/.local/bin/sts2"
+                    return 0
+                fi
+            fi
+            ;;
+        Darwin)
+            # macOS: ~/.local/bin/sts2
+            if [[ -f "$HOME/.local/bin/sts2" ]]; then
+                echo "$HOME/.local/bin/sts2"
+                return 0
+            fi
+            ;;
+        MINGW*|MSYS*|CYGWIN*)
+            # Git Bash / MSYS2 / Cygwin on Windows
+            if [[ -n "${LOCALAPPDATA:-}" ]]; then
+                local converted
+                converted="$(cygpath "$LOCALAPPDATA" 2>/dev/null || echo "$LOCALAPPDATA")"
+                if [[ -f "$converted/sts2-cli/sts2.exe" ]]; then
+                    echo "$converted/sts2-cli/sts2.exe"
+                    return 0
+                fi
+            fi
+            ;;
+    esac
+
+    return 1
+}
+
+STS2_EXE="$(find_sts2)" || {
+    echo "Error: sts2 CLI not found." >&2
+    echo "" >&2
+    echo "Install it by publishing STS2-Cli-Mod:" >&2
+    echo "  dotnet publish STS2.Cli.Cmd/STS2.Cli.Cmd.csproj -c Release -r <rid>" >&2
+    echo "" >&2
+    echo "Or set STS2_CLI_DIR to the directory containing the sts2 binary:" >&2
+    echo "  export STS2_CLI_DIR=/path/to/dir" >&2
+    exit 1
+}
+
+exec "$STS2_EXE" "$@"

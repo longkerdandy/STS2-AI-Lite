@@ -8,7 +8,8 @@ AI player project that interacts with Slay the Spire 2 via the `./sts2` CLI. Sup
 STS2-AI-Lite/
 ├── AGENTS.md                    # This document: top-level index
 ├── opencode.json                # OpenCode configuration
-├── sts2 -> STS2-Cli-Mod         # CLI binary symlink
+├── sts2                         # CLI wrapper script (bash — Linux/macOS/WSL)
+├── sts2.cmd                     # CLI wrapper script (batch — Windows native)
 ├── run-state.md                 # Current runtime state (temporary file)
 ├── .opencode/
 │   ├── agents/
