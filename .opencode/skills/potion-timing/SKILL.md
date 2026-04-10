@@ -191,7 +191,10 @@ Some potions require selecting cards after use. When using these, the game enter
 - `ASHWATER` - Choose 1-N from hand (multi-select)
 - `TOUCH_OF_INSANITY` - Choose 1 from hand
 
-**Important:** Selection potions may fail or cause TUI glitches. If `use_potion` times out or screen shows `POTION_SELECTION` but selection fails, document in `.opencode/logs/cli-errors.md`.
+**Important:** Selection potions may fail or cause TUI glitches. If `use_potion` times out or selection fails, file a bug report:
+```
+./sts2 report_bug --title "Potion selection failed" --description "<details>" --last-command "<the use_potion command>" --severity medium --labels "potion,selection"
+```
 
 ## Related Skills
 

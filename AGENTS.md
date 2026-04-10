@@ -26,8 +26,6 @@ STS2-AI-Lite/
 │   │   └── rest-site-tactics/   # Rest site heal vs smith vs dig
 │   ├── commands/
 │   │   └── play.md              # /play — full auto-play command
-│   └── logs/
-│       └── cli-errors.md        # CLI error log and workarounds
 └── docs/                        # Game knowledge reference (read on demand)
     ├── deck-building-framework.md # ★ Unified evaluation framework (card tiers, archetypes, weaknesses)
     ├── cli-reference.md         # CLI command manual (40+ commands, 18 screen types)

@@ -189,11 +189,15 @@ A loop works when:
 
 On any error, always re-run `./sts2 state` before continuing.
 
-### CLI Error Logging
+### Bug Reporting
 
-Record potential CLI MOD bugs in `.opencode/logs/cli-errors.md`:
-- TIMEOUT on potion use, TUI blank line floods, ACTION_CANCELLED after timeout
-- Format: `### YYYY-MM-DD: Description` with Command, Error Type, Context, Workaround, Status
+When encountering potential CLI MOD bugs (TIMEOUT, ACTION_CANCELLED, TUI glitches, state desync), file a structured report:
+
+```
+./sts2 report_bug --title "<short summary>" --description "<what happened vs expected>" --last-command "<the command>" --last-response '<json response>' --severity <low|medium|high|critical> --labels "<comma-separated>"
+```
+
+This auto-captures a game state snapshot. Use severity `high` for combat-breaking issues, `critical` for data loss or crashes.
 
 ## Game Knowledge References
 
