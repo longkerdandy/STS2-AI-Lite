@@ -87,7 +87,9 @@ Track `last_dispatched_agent` to resolve shared screens:
 ## Screens Handled Directly
 
 ### MAP
-Load `map-pathing` skill. Read `map.travelable_coords` and `map.nodes`. Choose based on priority and path planning.
+Load `map-pathing` skill. Two modes:
+- **First MAP of act** (no `current_coord` or new act): Compute full-act optimal path using `map.nodes[]` graph. Store planned path in `run-state.md`.
+- **Subsequent MAPs**: Follow the pre-computed path. Check re-plan triggers (HP drop, readiness change). Re-plan if needed.
 
 ### EVENT
 Read event options. For simple resource events (gold, HP, curses), decide directly based on risk/reward. For events involving card operations, dispatch to Deck-Building Agent.

@@ -49,6 +49,8 @@ echo "## Potions: None" >> ./run-state.md
 echo "" >> ./run-state.md
 echo "## Weaknesses: Starter deck — needs exhaust, draw, energy, damage" >> ./run-state.md
 echo "" >> ./run-state.md
+echo "## Map Plan: Not yet computed" >> ./run-state.md
+echo "" >> ./run-state.md
 echo "## Notes: New run. Collecting infinite components." >> ./run-state.md
 ```
 
@@ -78,6 +80,11 @@ echo "## Notes: New run. Collecting infinite components." >> ./run-state.md
 ## Potions: [Current potions]
 
 ## Weaknesses: [Current deck gaps relative to infinite]
+
+## Map Plan:
+- Planned Path: [(col,row), (col,row), ...]
+- Path Score: [Number]
+- Plan Reason: [Brief explanation]
 
 ## Notes: [Strategic observations and priorities]
 ```
