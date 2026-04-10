@@ -13,9 +13,7 @@ STS2-AI-Lite/
 ├── run-state.md                 # Current runtime state (temporary file)
 ├── .opencode/
 │   ├── agents/
-│   │   ├── game-master.md       # Primary orchestrator (state routing, map, events, lifecycle)
-│   │   ├── combat.md            # Combat subagent (fighting + combat sub-states)
-│   │   └── deck-building.md     # Deck-building subagent (rewards, shop, rest site, card selection)
+│   │   └── game-master.md       # Unified agent — handles ALL screens directly
 │   ├── skills/
 │   │   ├── combat-loop/         # Combat execution, turn planning, threat assessment
 │   │   ├── run-state-management/# Persistent run state tracking
@@ -40,26 +38,34 @@ STS2-AI-Lite/
 
 ## Architecture
 
-### Agent Hierarchy
+### Single-Agent Design
 
 ```
-Game Master (Primary) — state routing, map, events, treasure, crystal sphere, lifecycle
-├── Combat Agent (Subagent) — combat execution, HAND_SELECT, TRI_SELECT sub-states
-└── Deck-Building Agent (Subagent) — rewards, shop, rest site, card/relic selection
+Game Master (Unified) — handles ALL screens directly, no subagent dispatch
+  ├── Combat — executed inline, no Task overhead
+  ├── Deck-Building — evaluated inline (rewards, shop, rest site, card selection)
+  ├── Map Navigation — path planning and node selection
+  ├── Events / Treasure / Crystal Sphere — handled directly
+  └── Skills — loaded on-demand for strategy knowledge (once per run per type)
 ```
+
+**Why single-agent?** Eliminates Task dispatch overhead (cold-start, context rebuild, skill reload). Each subagent dispatch added 10-30s of latency. Single-agent handles everything in one continuous context.
 
 ### Screen Routing
 
-| Screen | Handler |
-|--------|---------|
-| `MAP` | Game Master (map-pathing skill) |
-| `COMBAT`, `HAND_SELECT` | Combat Agent |
-| `REWARD`, `CARD_REWARD`, `SHOP`, `REST_SITE` | Deck-Building Agent |
-| `GRID_CARD_SELECT`, `RELIC_SELECT`, `BUNDLE_SELECT` | Deck-Building Agent |
-| `EVENT` | Game Master (simple) / Deck-Building (card-related) |
-| `TREASURE`, `CRYSTAL_SPHERE` | Game Master |
-| `TRI_SELECT` | Context-dependent (Combat or Deck-Building) |
-| `MENU`, `CHARACTER_SELECT`, `GAME_OVER` | Game Master |
+All screens handled directly by the unified agent:
+
+| Screen | Skill (loaded once) |
+|--------|---------------------|
+| `MAP` | `map-pathing` |
+| `COMBAT`, `HAND_SELECT` | `combat-loop` |
+| `REWARD`, `CARD_REWARD` | `card-reward` |
+| `SHOP` | `shop-evaluation` |
+| `REST_SITE` | `rest-site-tactics` |
+| `GRID_CARD_SELECT`, `RELIC_SELECT`, `BUNDLE_SELECT` | — |
+| `EVENT`, `TREASURE`, `CRYSTAL_SPHERE` | — |
+| `TRI_SELECT` | — |
+| `MENU`, `CHARACTER_SELECT`, `GAME_OVER` | — |
 
 ## Usage Guide
 
@@ -73,23 +79,24 @@ Type `/play` to run the game from current state to game over automatically.
 | Card/relic evaluation data | `docs/deck-building-framework.md` ★ |
 | How to run full game | `game-master.md` agent |
 | How to fight | `combat-loop` skill |
-| How to build deck | `deck-building.md` agent |
+| How to build deck | `game-master.md` (deck-building section) |
 | When to use potions | `potion-timing` skill |
 | CLI command details | `docs/cli-reference.md` |
 | Card/enemy/relic data | Corresponding files under `docs/` |
 
 ### Skill Loading Rules
 
-Load skills for **strategy knowledge**, read docs/ for **data reference**:
+Load skills **once per run** on first encounter. Don't reload on repeat encounters.
 
-| Scenario | Action |
-|----------|--------|
-| Start full combat | Load `combat-loop` skill |
-| Navigate map | Load `map-pathing` skill |
-| Enter shop | Load `shop-evaluation` skill |
-| Enter rest site | Load `rest-site-tactics` skill |
-| Select card reward | Load `card-reward` skill + Read `docs/deck-building-framework.md` |
-| Update run state | Load `run-state-management` skill |
+| First Encounter | Load Skill |
+|-----------------|------------|
+| First combat | `combat-loop` |
+| First map screen | `map-pathing` |
+| First shop | `shop-evaluation` |
+| First rest site | `rest-site-tactics` |
+| First card reward | `card-reward` + Read `docs/deck-building-framework.md` |
+| Potion decision needed | `potion-timing` |
+| Run start | `run-state-management` |
 | Unfamiliar enemy/card/relic | Read corresponding `docs/` file |
 | CLI bug encountered | `./sts2 report_bug --title "..." --description "..." --severity <level>` |
 
