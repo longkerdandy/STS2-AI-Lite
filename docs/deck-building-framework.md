@@ -327,10 +327,18 @@ The fallback is rarely needed — exhaust components (True Grit, Burning Pact, P
 
 ## Doormaker Boss Counter
 
-Act 3 boss Doormaker has turns that prohibit card draw, which counters draw-dependent infinite loops.
+Act 3 boss Doormaker (489/512 HP) has three mechanics that counter infinite loops:
+
+1. **Weighted affliction** (from HungerPower/GraspPower): Applied to ALL player cards — each card costs extra energy to play
+2. **ScrutinyPower**: Blocks non-hand-draw card draw (Dark Embrace, Pommel Strike draw, Battle Trance, etc.)
+3. **GraspPower**: Applies Weighted to all cards + gains 4/5 Strength + player loses 1 Str/1 Dex
+
+Pattern: Dramatic Open → Hunger → Scrutiny → Grasp → Hunger → loop
 
 **Countermeasures:**
-- Keep 0-cost attacks in loop (Spite, Pact's End) — playable without draw
-- Kill within first 3–4 turns before the anti-draw turn activates
+- **Corruption** nullifies Weighted on Skills (Skills still cost 0 and exhaust)
+- Keep 0-cost cards in loop (Spite, Pact's End, Bloodletting) — Weighted on 0-cost is still manageable
+- Kill within first 3–4 turns before Weighted stacks become unmanageable
 - Pre-build block on previous turns via Feel No Pain exhaust triggers
-- Use Impervious or block potions to survive the restricted turn
+- Use Impervious or block potions for Scrutiny (30/35) and Grasp (20/23) damage turns
+- Charon's Ashes provides passive damage per exhaust even during restricted turns

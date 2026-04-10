@@ -105,7 +105,7 @@ Infinite setup overrides single kills UNLESS:
 
 **Increased urgency:** High burst damage turns 1-3 (need potions/block to survive setup), debuff enemies applying Frail (reduces Feel No Pain block), enemies with Artifact (can't apply Weak to reduce damage).
 
-**Doormaker Boss (Act 3):** Prohibits card drawing on certain turns — directly counters draw-based loops. Race to kill turns 1-4, or keep 0-cost cards (Spite, Bloodletting) playable without draw, or pre-build massive block via FNP before the restriction turn.
+**Doormaker Boss (Act 3):** Three mechanics counter infinite: (1) HungerPower/GraspPower apply Weighted affliction to all cards (extra energy cost per card), (2) ScrutinyPower blocks draw effects (Dark Embrace, Pommel Strike, etc.), (3) Grasp deals 20/23 damage + Str/Dex debuff. Race to kill turns 1-4; Corruption nullifies Weighted on Skills; keep 0-cost cards (Spite, Bloodletting) playable; pre-build block via FNP before Scrutiny turn. Pattern: Open → Hunger → Scrutiny → Grasp → loop.
 
 ### Step 4: Execute Actions
 

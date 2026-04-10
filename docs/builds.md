@@ -230,14 +230,22 @@ These fallbacks are rarely needed. The exhaust components are common/uncommon �
 
 ## Doormaker Boss (Act 3)
 
-Doormaker has turns that prohibit card draw, which counters draw-dependent loops.
+Doormaker is the hardest Act 3 boss for infinite decks. Three mechanics target the engine:
+
+1. **HungerPower** (Hunger turn): Applies Weighted affliction to all player cards — each card costs extra energy to play
+2. **ScrutinyPower** (Scrutiny turn): Prohibits non-hand-draw card draw — blocks Dark Embrace, Pommel Strike draw, Battle Trance, etc.
+3. **GraspPower** (Grasp turn): Applies Weighted affliction to ALL cards (including new ones), +4/5 Strength, player -1 Str/-1 Dex
+4. **Grasp now deals 20/23 damage** — no longer a "free" buff/debuff turn
+
+**Pattern**: Dramatic Open → Hunger → Scrutiny → Grasp → Hunger → loop
 
 **Countermeasures:**
-- Race: Kill within first 3–4 turns before anti-draw activates
-- 0-cost cards: Spite, Pact's End, Bloodletting are playable without draw
-- Pre-block: Build massive block via Feel No Pain on the turn before restriction
-- Emergency: Impervious, block potions for the restricted turn
-- Best case: Charon's Ashes provides passive damage even during restricted turns
+- **Race**: Kill within first 3–4 turns before Weighted stacks become unmanageable. Doormaker has 489/512 HP.
+- **Corruption**: Nullifies Weighted affliction on Skills — Skills still cost 0 and exhaust (Corruption overrides energy cost)
+- **0-cost cards**: Spite, Pact's End, Bloodletting are unaffected by Weighted (0 + extra cost is still playable)
+- **Pre-block**: Build massive block via Feel No Pain before Scrutiny turn (draw is blocked)
+- **Charon's Ashes**: Provides passive damage per exhaust even during restricted turns
+- **Emergency**: Impervious, block potions for high-damage turns (Scrutiny 30/35, Grasp 20/23)
 
 ## Quick Reference
 

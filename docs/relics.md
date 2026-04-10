@@ -134,7 +134,7 @@ Available to all characters. These are the Common, Uncommon, Rare, and Shop reli
 | Toxic Egg | Rare | Whenever you add a Skill into your Deck, Upgrade it. |
 | Tungsten Rod | Rare | Whenever you would lose HP, lose 1 less. |
 | Unceasing Top | Rare | Whenever you have no cards in Hand during your turn, draw a card. |
-| Unsettling Lamp | Rare | Each combat, the first time you play a card that Debuffs an enemy, double its effect. |
+| Unsettling Lamp | Rare | Each combat, the first Debuff you apply to an enemy is doubled. (Only affects Debuff-type powers, not Buffs.) |
 | Vexing Puzzlebox | Rare | At the start of each combat, add a random card into your Hand. It costs 0 Energy. |
 | White Beast Statue | Rare | Potions always appear in combat rewards. |
 | White Star | Rare | Elites drop an additional Rare card reward. |
@@ -285,7 +285,7 @@ Obtained from events, treasures, and special encounters. Includes Ancient (highe
 | Dream Catcher | Event | Whenever you Rest, you may add a card to your Deck. |
 | Ember Tea | Event | At the start of the next 2 combats, gain 2 Strength. |
 | Forgotten Soul | Event | Whenever you Exhaust a card, deal 1 damage to a random enemy. |
-| Fragrant Mushroom | Event | Upon pickup, lose 15 HP and Upgrade 3 random cards. |
+| Fragrant Mushroom | Event | Upon pickup, lose 15 HP and Upgrade 2 random cards. |
 | Fresnel Lens | Event | Whenever you add a card that gains Block to your Deck, Enchant it with Nimble 2. |
 | Hand Drill | Event | Whenever you break an enemy's Block, apply 2 Vulnerable. |
 | Happy Flower??? | Event | Every 5 turns, gain 1 Energy. |
@@ -462,4 +462,4 @@ Relics that directly change how you should play each turn.
 | Paper Phrog | Vulnerable = 75% more damage (instead of 50%) |
 | Bag of Marbles | 1 Vulnerable to ALL enemies at combat start |
 | Red Mask | 1 Weak to ALL enemies at combat start |
-| Unsettling Lamp | First debuff each combat is doubled |
+| Unsettling Lamp | First debuff each combat is doubled (debuffs only) |

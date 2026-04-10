@@ -29,14 +29,14 @@
 
 ### Doormaker
 
-- **HP**: Phase 1 "Door" has infinite HP
+- **HP**: 489/512
 - **Moves**:
-  - **Dramatic Open**: Transforms, summons enemies, applies Hunger of the Void
-  - **Beam**: 10/11 damage x3 hits
-  - **Chomp**: 40/45 damage
-  - **Pulverize**: 20/22 damage + gains 2/3 Strength
-- **Pattern**: Open -> Beam -> Chomp -> Pulverize -> Beam -> loop
-- **Notes**: Phase 1 is invincible. Phase 2 starts after Dramatic Open.
+  - **Dramatic Open**: Transforms from invincible "Door" phase, summons enemies, applies HungerPower
+  - **Hunger**: 12/13 damage x2 hits + HungerPower (gives all player cards the Devoured/Weighted affliction = cards cost extra energy to play)
+  - **Scrutiny**: 30/35 damage + ScrutinyPower (prohibits non-hand-draw card draw)
+  - **Grasp**: 20/23 damage + gains 4/5 Strength + player loses 1 Strength and 1 Dexterity
+- **Pattern**: Dramatic Open -> Hunger -> Scrutiny -> Grasp -> Hunger -> loop
+- **Notes**: Phase 1 "Door" has infinite HP. Phase 2 starts after Dramatic Open. GraspPower applies Weighted affliction to ALL cards (extra energy cost per card). ScrutinyPower blocks draw effects. This is the hardest Act 3 boss for infinite decks.
 
 ### Fabricator
 
@@ -296,9 +296,9 @@
 - **HP**: 74/79
 - **Starting**: 15 Hardened Shell
 - **Moves**:
-  - **Smash**: 9/11 damage + adds 5 Dazed to draw pile
-  - **Zoom**: 16/17 damage + 10/13 block
-  - **Inertia**: Gains 3/4 Strength + adds 3 Dazed to draw pile
+  - **Smash**: 12/13 damage + adds 5 Dazed to draw pile
+  - **Zoom**: 14/16 damage + 10/13 block
+  - **Inertia**: 9/11 damage + gains 3/4 Strength + adds 3 Dazed to draw pile
   - **Piercing Stabs**: 7/8 damage x2 hits
 - **Pattern**: Smash -> Zoom -> Inertia -> Piercing Stabs -> repeat
 

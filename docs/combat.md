@@ -155,7 +155,17 @@ Each enemy shows intents for their upcoming turn:
 | **DEFEND** | Will gain block. |
 | **BUFF** | Will apply a buff to itself or allies. |
 | **DEBUFF** | Will apply a debuff to the player. |
-| **UNKNOWN** | Intent hidden or mixed. |
+| **DEBUFF_STRONG** | Will apply a strong/dangerous debuff (e.g., massive stat loss). |
+| **STATUS_CARD** | Will add Status cards to player's deck/hand (Dazed, Slimed, etc.). |
+| **CARD_DEBUFF** | Will debuff player's cards (afflictions, cost increases, etc.). |
+| **SUMMON** | Will summon minions or allies. |
+| **HEAL** | Will heal itself or allies. |
+| **DEATH_BLOW** | Will execute a lethal attack (conditional high-damage move). |
+| **ESCAPE** | Will flee combat. |
+| **SLEEP** | Is sleeping/inactive (does nothing). |
+| **STUN** | Is stunned (does nothing). |
+| **HIDDEN** | Intent is concealed (unknown action). |
+| **UNKNOWN** | Intent not determined or mixed. |
 
 **Multiple intents**: An enemy can have multiple intents in one turn (e.g., attack AND buff).
 
