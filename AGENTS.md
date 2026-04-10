@@ -17,10 +17,8 @@ STS2-AI-Lite/
 │   │   ├── combat.md            # Combat subagent (fighting + combat sub-states)
 │   │   └── deck-building.md     # Deck-building subagent (rewards, shop, rest site, card selection)
 │   ├── skills/
-│   │   ├── combat-loop/         # Combat execution workflow
+│   │   ├── combat-loop/         # Combat execution, turn planning, threat assessment
 │   │   ├── run-state-management/# Persistent run state tracking
-│   │   ├── end-state-evaluation/# Turn planning framework
-│   │   ├── threat-assessment/   # Enemy threat analysis
 │   │   ├── card-reward/         # Card reward evaluation
 │   │   ├── potion-timing/       # Potion usage timing
 │   │   ├── map-pathing/         # Map node evaluation and selection
@@ -78,13 +76,6 @@ Type `/play` to run the game from current state to game over automatically.
 | How to run full game | `game-master.md` agent |
 | How to fight | `combat-loop` skill |
 | How to build deck | `deck-building.md` agent |
-| How to navigate map | `map-pathing` skill |
-| How to shop | `shop-evaluation` skill |
-| How to rest | `rest-site-tactics` skill |
-| How to track run state | `run-state-management` skill |
-| How to plan turns | `end-state-evaluation` skill |
-| How to evaluate enemies | `threat-assessment` skill |
-| How to choose card rewards | `card-reward` skill + `docs/deck-building-framework.md` |
 | When to use potions | `potion-timing` skill |
 | CLI command details | `docs/cli-reference.md` |
 | Card/enemy/relic data | Corresponding files under `docs/` |
@@ -96,12 +87,10 @@ Load skills for **strategy knowledge**, read docs/ for **data reference**:
 | Scenario | Action |
 |----------|--------|
 | Start full combat | Load `combat-loop` skill |
-| Plan turn | Load `end-state-evaluation` skill |
 | Navigate map | Load `map-pathing` skill |
 | Enter shop | Load `shop-evaluation` skill |
 | Enter rest site | Load `rest-site-tactics` skill |
 | Select card reward | Load `card-reward` skill + Read `docs/deck-building-framework.md` |
-| Assess threat | Load `threat-assessment` skill |
 | Update run state | Load `run-state-management` skill |
 | Unfamiliar enemy/card/relic | Read corresponding `docs/` file |
 

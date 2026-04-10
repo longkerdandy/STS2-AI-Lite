@@ -336,8 +336,6 @@ When updating, rewrite the full run-state.md with current data:
 | **card-reward** | Check missing categories → prioritize cards that fill gaps. If "Infinite Ready", skip all rewards. |
 | **shop-evaluation** | Card removal is #1 priority. Buy cards that fill missing categories. |
 | **rest-site-tactics** | Upgrade Tier 1 infinite targets (Pommel Strike, Dark Embrace, Corruption). |
-| **end-state-evaluation** | If "Infinite Ready", add infinite loop as candidate sequence type. |
-| **threat-assessment** | Infinite decks can afford longer fights — reduce urgency of fast kills pre-loop. |
 | **map-pathing** | Infinite builds value shops highly for card removal. Route toward shops. |
 
 ## Error Handling

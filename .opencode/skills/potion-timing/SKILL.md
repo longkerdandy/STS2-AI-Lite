@@ -197,7 +197,6 @@ Some potions require selecting cards after use. When using these, the game enter
 
 | Situation | Load Skill |
 |-----------|------------|
-| Planning turns with potions | `end-state-evaluation` |
 | Full combat procedure | `combat-loop` |
 
 ## Game Knowledge References
