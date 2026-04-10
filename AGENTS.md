@@ -24,8 +24,8 @@ STS2-AI-Lite/
 │   │   ├── map-pathing/         # Map node evaluation and selection
 │   │   ├── shop-evaluation/     # Shop purchase decisions
 │   │   └── rest-site-tactics/   # Rest site heal vs smith vs dig
-│   ├── commands/
-│   │   └── play.md              # /play — full auto-play command
+│   └── commands/
+│       └── play.md              # /play — full auto-play command
 └── docs/                        # Game knowledge reference (read on demand)
     ├── deck-building-framework.md # ★ Unified evaluation framework (card tiers, archetypes, weaknesses)
     ├── cli-reference.md         # CLI command manual (40+ commands, 18 screen types)
@@ -91,6 +91,7 @@ Load skills for **strategy knowledge**, read docs/ for **data reference**:
 | Select card reward | Load `card-reward` skill + Read `docs/deck-building-framework.md` |
 | Update run state | Load `run-state-management` skill |
 | Unfamiliar enemy/card/relic | Read corresponding `docs/` file |
+| CLI bug encountered | `./sts2 report_bug --title "..." --description "..." --severity <level>` |
 
 ### Output Format
 
