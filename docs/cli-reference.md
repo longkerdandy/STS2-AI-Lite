@@ -9,7 +9,6 @@ Exit codes: 0=success, 1=connection, 2=invalid state, 3=invalid param, 4=timeout
 | Option | Description |
 |--------|-------------|
 | `--version`, `-v` | Show CLI version |
-| `--pretty`, `-p` | Pretty-print JSON output |
 
 ## Commands
 

@@ -100,7 +100,7 @@ Launch STS2 with the mod loaded, then test:
 ./sts2 ping
 # {"ok": true}
 
-./sts2 state --pretty
+./sts2 state
 # Returns current game state as JSON
 ```
 
