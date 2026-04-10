@@ -1,18 +1,22 @@
 ---
 name: shop-evaluation
-description: Shop purchase decision framework for Slay the Spire 2 — card/relic/potion evaluation, gold budget management, and card removal priority
+description: Shop purchase decision framework for Slay the Spire 2 — card removal priority, infinite component acquisition, gold budget management
 ---
 
 # Shop Evaluation
 
 Use this skill when the Deck-Building Agent enters a SHOP screen.
 
-**Data source**: All card tiers, archetype definitions, relic evaluation, gold efficiency thresholds, and card removal priority are defined in `docs/deck-building-framework.md`. Read it before making purchase decisions.
+**Data source**: All card tiers, relic evaluation, gold efficiency thresholds, and card removal priority are defined in `docs/deck-building-framework.md`. Read it before making purchase decisions.
+
+## Core Principle
+
+For infinite builds, **card removal is the #1 shop priority**. Every card removed brings the deck closer to loop activation. Removal > buying cards > buying relics.
 
 ## Procedure
 
 1. Read game state: `shop.cards[]`, `shop.relics[]`, `shop.potions[]`, `shop.card_removal`, `shop.player_gold`
-2. Read `run-state.md` for current build archetype, key cards, weaknesses, deck size
+2. Read `run-state.md` for infinite readiness, missing categories, deck size, basics removed
 3. Read `docs/deck-building-framework.md` for evaluation data
 4. Evaluate all items using the framework
 5. Execute purchases in priority order (highest value first)
@@ -21,45 +25,56 @@ Use this skill when the Deck-Building Agent enters a SHOP screen.
 ## Step 1: Assess Current State
 
 From `run-state.md` and game state, determine:
-- **Archetype**: Use the Signal Table in the framework
+- **Infinite Readiness**: Not Started / Building / Almost Ready / Infinite Ready
+- **Missing categories**: Exhaust / Draw / Energy — what does the deck still need?
 - **Deck size**: Check against Deck Size Rules in the framework
-- **Weaknesses**: Check against Weakness Categories in the framework
+- **Basics remaining**: How many Defends / Strikes left to remove?
 - **Gold budget**: Check Gold Budget by Act in the framework
 
-## Step 2: Evaluate Cards
-
-For each `shop.cards[]` item where `is_stocked` is true:
-
-1. Look up the card's tier in the **Card Tier List** (framework)
-2. Check archetype fit using **Archetype Signal Table** (framework)
-3. Check if it fixes a weakness from **Weakness Categories** (framework)
-4. Apply **Deck Size Rules** — skip if deck is too large for the card's tier
-5. Check price against **Purchase Value Thresholds** (framework)
-
-Score: `Card Tier + Archetype Fit + Weakness Fix - Deck Size Penalty - Gold Cost`
-
-## Step 3: Evaluate Relics
-
-For each `shop.relics[]` item where `is_stocked` is true:
-
-1. Check **Universal High-Value Relics** table (framework) — energy relics are always worth buying
-2. Check **Archetype-Specific Relics** table (framework) — strong synergy relics are high priority
-3. Check **Relic Traps** in Anti-Patterns (framework) — avoid traps like Ectoplasm without a strong deck
-4. Check price against thresholds (framework): ≤ 250g for universal, ≤ 200g for archetype-specific
-
-## Step 4: Evaluate Card Removal
+## Step 2: Evaluate Card Removal (FIRST PRIORITY)
 
 If `shop.card_removal` exists and `is_used` is false:
 
-1. Check **Card Removal Priority** in the framework
-2. Card removal is almost always worth buying if deck > 15 cards
-3. Priority: Curses > Strikes > Defends > Status cards
-4. Skip if deck < 15 cards or all cards are useful
+1. **Card removal is almost always the best purchase** for infinite builds
+2. Removal priority (from framework):
+   - **Curses** → always remove
+   - **Defends** → highest priority basic removal
+   - **Strikes** → next priority after Defends gone
+   - **Status cards** stuck in deck
+   - **Non-infinite cards** added by mistake
+3. Skip removal ONLY if all remaining cards serve the infinite AND deck ≤ 12
 
 When `shop_remove_card` opens GRID_CARD_SELECT:
 - Pick the highest-priority removal target per framework
 - Use `./sts2 grid_select_card <card_id>` to remove
-- Or `./sts2 grid_select_skip` to cancel
+- Or `./sts2 grid_select_skip` to cancel (only if no valid target)
+
+## Step 3: Evaluate Cards
+
+For each `shop.cards[]` item where `is_stocked` is true:
+
+1. Look up the card's tier in the **Card Tier List** (framework)
+2. Check if it fills a **missing infinite category**
+3. Apply **Deck Size Rules** — skip if deck is too large (20+)
+4. Check price against **Purchase Value Thresholds** (framework)
+
+**Buy conditions:**
+- S-tier infinite component: Any price (Offering, Dark Embrace, Feel No Pain, etc.)
+- A-tier card that fills missing category: ≤ 150g
+- A-tier card (general): ≤ 120g
+- B-tier card (critical gap only): ≤ 80g
+- If readiness is "Infinite Ready": Skip ALL cards (don't add noise)
+
+## Step 4: Evaluate Relics
+
+For each `shop.relics[]` item where `is_stocked` is true:
+
+1. Check **S-Tier Relics** in framework — energy relics, Unceasing Top, Runic Pyramid always worth buying
+2. Check **A-Tier Relics** — Charon's Ashes, Burning Sticks, Mummified Hand etc.
+3. Check **Relic Traps** — **NEVER buy Velvet Choker or Fiddle** (kills infinite)
+4. Price thresholds: ≤ 300g for S-tier (energy, Unceasing Top), ≤ 200g for A-tier
+
+**Important**: Card removal is higher priority than relics. Don't skip removal to buy a relic.
 
 ## Step 5: Evaluate Potions
 
@@ -68,25 +83,33 @@ For each `shop.potions[]` item where `is_stocked` is true:
 1. Check if potion belt has empty slots (if full, skip)
 2. Buy only if boss or elite is within next 2-3 floors
 3. Price threshold: ≤ 75g
-4. Priority: damage potions for boss, block potions if low HP
+4. Priority: Energy potions (help engine setup), block potions (survive setup turns), damage potions (for boss)
 
 ## Step 6: Purchase Order
 
 Execute purchases in this order (highest value first):
 
 ```
-1. S-tier card (any price)
-2. Card removal (if deck > 15 and removal target exists)
-3. Archetype core card (≤ 150g)
-4. Energy/universal relic (≤ 250g)
-5. Archetype-synergy relic (≤ 200g)
-6. A-tier card that fills weakness (≤ 120g)
-7. Useful potion (≤ 75g, boss soon)
-8. B-tier card for critical weakness (≤ 80g)
+1. Card removal (ALWAYS buy if available and valid target exists)
+2. S-tier infinite card (any price)
+3. Energy relic / Unceasing Top / Runic Pyramid (≤ 300g)
+4. A-tier card that fills missing category (≤ 150g)
+5. Infinite-synergy relic (≤ 200g)
+6. A-tier card (general fit) (≤ 120g)
+7. Useful potion (≤ 75g, boss/elite soon)
+8. B-tier card for critical gap (≤ 80g)
 9. Skip remaining items
 ```
 
 After each purchase, re-check remaining gold before next purchase.
+
+## Gold Budget by Act
+
+| Act | Reserve | Strategy |
+|-----|---------|----------|
+| Act 1 | Keep ≥ 75g | Card removal is priority. Buy 1 core infinite piece max. |
+| Act 2 | Keep ≥ 100g | Card removal + engine completion. This is the critical shopping act. |
+| Act 3+ | Spend freely | Deck should be complete. Remove remaining filler. |
 
 ## Commands
 
@@ -101,13 +124,14 @@ After each purchase, re-check remaining gold before next purchase.
 ## Output Format
 
 ```
-[SHOP: Gold 187, Exhaust build (18 cards). Shrug It Off (48g) S-tier + fills Block weakness. Buying.]
-> ./sts2 shop_buy_card SHRUG_IT_OFF
-
-[SHOP: Gold 139. Card removal (75g) to remove Strike — deck thinning priority.]
+[SHOP: Gold 187, Building infinite (16 cards, 2 Defends left). Card removal (75g) — removing Defend.]
 > ./sts2 shop_remove_card
+> ./sts2 grid_select_card DEFEND
 
-[SHOP: Gold 64. Remaining items don't justify spend. Leaving.]
+[SHOP: Gold 112. Dark Embrace (95g) fills missing Draw engine — buying.]
+> ./sts2 shop_buy_card DARK_EMBRACE
+
+[SHOP: Gold 17. Remaining items too expensive. Leaving.]
 > ./sts2 proceed
 ```
 
@@ -117,5 +141,5 @@ After each purchase, re-check remaining gold before next purchase.
 |-----------|------------|
 | Update run state after purchase | `run-state-management` |
 | Card evaluation data | Read `docs/deck-building-framework.md` |
-| Detailed archetype strategies | Read `docs/builds.md` |
+| Detailed infinite strategy | Read `docs/builds.md` |
 | Unfamiliar card/relic effects | Read `docs/cards.md` or `docs/relics.md` |

@@ -1,6 +1,6 @@
 ---
 name: combat-loop
-description: Full combat loop procedure for Slay the Spire 2 — state parsing, turn execution, error recovery, and combat-end detection
+description: Full combat loop procedure for Slay the Spire 2 — state parsing, turn execution, infinite loop detection, error recovery, and combat-end detection
 ---
 
 ## Combat Loop Procedure
@@ -11,7 +11,11 @@ Execute this loop continuously until combat ends.
 
 ### Step 0: Read Run State
 
-Read `run-state.md` for current build archetype and strategy notes. Use this to inform combat decisions (e.g., Exhaust decks can afford longer fights, Strength decks prioritize scaling).
+Read `run-state.md` for current build status:
+- **Infinite Readiness level** — determines combat approach:
+  - `Not Started` / `Building`: Play normally using end-state-evaluation
+  - `Almost Ready`: Use exhaust cards for value but don't force the loop
+  - `Infinite Ready`: Plan to exhaust-to-loop, then execute infinite cycle
 
 Proceed to Step 1.
 
@@ -38,6 +42,9 @@ Extract these values from the state:
 Player:
   hp, max_hp, block, energy, max_energy
   hand[] — playable cards with cost, damage, block, type, keywords
+  draw_pile[] — cards remaining to draw
+  discard_pile[] — cards in discard
+  exhaust_pile[] — cards exhausted this combat
   potions[] — available potions with slot, target_type
   powers[] — active buffs/debuffs
   relics[] — equipped relics
@@ -57,9 +64,26 @@ lethal_gap = total_incoming - player.block - player.hp
 
 If `lethal_gap > 0`, the player will die this turn without intervention.
 
+#### Infinite Loop Assessment
+
+If run-state readiness is "Infinite Ready" or "Almost Ready", also assess:
+
+```
+Active deck = hand + draw_pile + discard_pile (everything NOT in exhaust_pile)
+Engine powers active? Check player.powers for:
+  - Dark Embrace (draw per exhaust)
+  - Feel No Pain (block per exhaust)
+  - Corruption (skills cost 0 + exhaust)
+
+Cards to exhaust = active deck cards that are NOT loop components
+Loop components in active deck = cards that cycle (deal damage/block + draw/generate energy)
+```
+
 ### Step 3: Plan the Full Turn
 
 **Load the `end-state-evaluation` skill** for detailed turn planning procedures.
+
+#### Normal Combat (Not Infinite Ready)
 
 Plan ALL actions for this turn before executing any:
 
@@ -70,6 +94,29 @@ Plan ALL actions for this turn before executing any:
 5. **Verify Hard Constraints** — lethal handled? energy will be 0?
 
 Output the plan as a numbered list before executing.
+
+#### Infinite Combat (Infinite Ready)
+
+Plan in two phases:
+
+**Phase A — Setup (Turns 1-3):**
+1. Play engine powers: Dark Embrace, Feel No Pain, Corruption (if in hand and affordable)
+2. Use energy generators: Offering, Bloodletting (for extra energy to play powers)
+3. Begin exhausting non-loop cards: True Grit, Burning Pact, Second Wind, Brand
+4. Block as needed using Feel No Pain triggers or emergency block cards
+
+**Phase B — Loop Execution (when active deck is thin enough):**
+1. Identify the loop: which cards remain in hand+draw+discard?
+2. Can they cycle? Check: net energy ≥ 0 per cycle, net draw ≥ active deck size
+3. If YES: execute the loop repeatedly until all enemies are dead
+4. If NOT YET: continue exhausting on this turn, wait for next turn
+
+**Transition detection:** Move from Phase A to Phase B when:
+- Active deck ≤ 8 cards AND all are loop-compatible, OR
+- Corruption is active AND all Skills will auto-exhaust, OR
+- You can see that playing all exhaust cards this turn will leave only loop components
+
+Output the plan with phase label before executing.
 
 ### Step 4: Execute Actions
 
@@ -109,6 +156,21 @@ After each action, briefly verify the result JSON:
 - If a kill occurred (`killed: true`), note the enemy is dead.
 - If `status: "selection_required"` appears, handle potion selection before continuing.
 
+#### Infinite Loop Execution
+
+When executing the infinite loop (Phase B), follow this procedure:
+
+1. **Identify remaining loop cards** — re-read state to confirm active deck composition
+2. **Determine play order** — energy generators first (Bloodletting), then draw cards (Pommel Strike), then damage (attacks), then block (Shrug It Off)
+3. **Execute one full cycle** — play all loop cards in order
+4. **Re-read state** after the cycle completes: `./sts2 state`
+5. **Check if enemies are dead** — if all dead, combat over
+6. **If alive, repeat** — the loop cards should be back in hand/draw. Play another cycle.
+
+**Important:** Re-read state between cycles. Don't assume card positions — always verify hand contents before each play.
+
+**Loop safeguard:** If you've executed 5 cycles without killing and enemies are gaining HP/block faster than you deal damage, the loop may not be lethal. Stop looping, assess if a different approach is needed (e.g., use a potion, or find a different damage source).
+
 ### Step 5: End Turn
 
 When no more beneficial plays exist (energy exhausted or no good cards):
@@ -122,6 +184,8 @@ The response contains enemy turn results. Scan for:
 - Buffs/debuffs applied
 - Enemies that died (from DoT, thorns, etc.)
 - New powers gained by enemies
+
+**Note:** During infinite loop execution, you typically don't end turn until all enemies are dead. If you run out of energy mid-loop and need to pass, ensure Feel No Pain has generated enough block to survive the enemy turn.
 
 ### Step 6: Repeat
 
@@ -140,6 +204,45 @@ When combat ends, report the outcome:
 - Loss: "Combat lost. Player died on turn N."
 
 If the player won, update `run-state.md` Notes with combat observations (if significant), then **return control to the caller**. Reward settlement is handled separately by the Deck-Building Agent.
+
+## Infinite Loop Detection Reference
+
+### Loop-Compatible Cards
+
+Cards that can be part of an infinite cycle (they deal damage/block AND cycle):
+
+| Card | Cost | Cycle Mechanism | Damage/Block |
+|------|------|-----------------|--------------|
+| Bloodletting | 0 | +2(3)E = net energy gain | None (energy card) |
+| Pommel Strike | 1 | Draw 1(2) | 9(10) damage |
+| Shrug It Off | 1 | Draw 1 | 8(11) block |
+| Spite | 0 | Draw 1 if lost HP | 6(9) damage |
+| Flash of Steel | 0 | Draw 1 | 5(8) damage |
+| Finesse | 0 | Draw 1 | 4(7) block |
+| Headbutt | 1 | Put discard on draw | 9(12) damage |
+| Offering | 0 | +2E, draw 3(5), exhaust | One-time boost |
+| Battle Trance | 0 | Draw 3(4) | None (draw only) |
+
+### Loop Viability Check
+
+A loop is viable when:
+1. **Net energy per cycle ≥ 0**: Sum of energy generated ≥ sum of card costs
+2. **Net draw per cycle ≥ active deck size**: You draw back all cards each cycle
+3. **Positive damage**: At least one card in the loop deals damage
+4. **All enemies will eventually die**: Loop damage per cycle > enemy healing/block per turn
+
+### Example Loop Analysis
+
+```
+Active deck: Bloodletting, Pommel Strike+, Spite, Shrug It Off, Headbutt
+Energy per cycle: +2 (Bloodletting) - 1 (PS) - 0 (Spite) - 1 (SIO) - 1 (HB) = -1
+This does NOT loop with 3 base energy! Need: Bloodletting+ (+3E) OR remove one 1-cost card.
+
+Active deck: Bloodletting+, Pommel Strike+, Spite, Shrug It Off
+Energy: +3 - 1 - 0 - 1 = +1 (OK!)
+Draw: 2 (PS+) + 1 (Spite, if lost HP from BL) + 1 (SIO) = 4 draws, 4 cards. LOOPS!
+Damage: 10 (PS) + 9 (Spite) = 19 per cycle. All enemies die eventually.
+```
 
 ## Error Recovery
 
@@ -201,5 +304,5 @@ See `cli-errors.md` for examples and full recovery protocols.
 | Unfamiliar enemies | `docs/enemies.md` |
 | Unfamiliar relics | `docs/relics.md` |
 | Unfamiliar potions | `docs/potions.md` |
-| Build archetypes | `docs/builds.md` |
+| Build strategy | `docs/builds.md` |
 | CLI reference | `docs/cli-reference.md` |

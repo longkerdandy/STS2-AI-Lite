@@ -101,6 +101,33 @@ Watch for these dangerous enemy powers:
 | Angry | Gains Strength when damaged | MEDIUM — focus on one-shot kills |
 | Enrage | Gains Strength when player plays Skill | MEDIUM — prefer attacks over skills |
 
+## Infinite Deck Threat Adjustments
+
+When run-state shows "Infinite Ready" or "Almost Ready", threat assessment changes:
+
+### Reduced Urgency
+- **Scaling enemies (Ritual, Strength gain)**: Less threatening — infinite loop will outscale any enemy once active. Focus on surviving setup turns.
+- **High HP enemies**: No longer a problem — infinite deals unlimited damage. Don't waste potions on raw damage.
+- **Multi-enemy encounters**: Actually easier with infinite (loop kills all simultaneously).
+
+### Increased Urgency
+- **High burst damage on turns 1-3**: Critical — you need 2-3 turns to set up the engine. Enemies that deal 30+ damage on turn 1 require potions or emergency block.
+- **Debuff enemies (Frail, Weak)**: Frail reduces Feel No Pain's effective block. Weak reduces loop damage output. Prioritize killing debuffers.
+- **Artifact on enemies**: Can't apply Weak/Vulnerable to reduce damage during setup. Pure block/HP to survive.
+
+### Doormaker Boss (Act 3 — SPECIAL)
+
+Doormaker has a mechanic that **prohibits card drawing** on certain turns. This directly counters infinite loops that depend on drawing cards.
+
+**Threat level**: CRITICAL for infinite decks.
+
+**Countermeasures:**
+- Race to kill within turns 1-4 before the restriction activates
+- Keep 0-cost cards in loop (Spite, Bloodletting, Pact's End) — playable without draw
+- Pre-build massive block via Feel No Pain on the turn before restriction
+- Use Impervious or block potions for the restricted turn
+- Charon's Ashes provides passive damage even without playing cards
+
 ## Reading Enemy Patterns
 
 For unfamiliar enemies, read `docs/enemies.md` to understand:

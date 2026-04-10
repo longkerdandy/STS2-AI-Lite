@@ -2,228 +2,335 @@
 
 > Single source of truth for card, relic, and deck evaluation across all decision points.
 > Referenced by: card-reward, shop-evaluation, rest-site-tactics skills.
-> For detailed per-archetype strategy and gameplay, see `docs/builds.md`.
+> Strategy: **Progressive Infinite** — the dominant Ironclad strategy for A10+ clears.
 
-## Archetype Identification
+## Core Strategy: Progressive Infinite
 
-### Signal Table
+Ironclad's strongest and most consistent strategy is **exhaust-based infinite**. The deck uses exhaust cards to thin the active card pool during combat until only loop components remain, then cycles them infinitely to kill any enemy.
 
-| Archetype | Core Signals (2+ = committed) | Secondary Signals |
-|-----------|-------------------------------|-------------------|
-| **Strength** | Demon Form, Inflame, Whirlwind, Thrash | Twin Strike, Brand, Fight Me! |
-| **Block / Body Slam** | Body Slam, Barricade, Unmovable | Shrug It Off, Blood Wall, Impervious, Flame Barrier |
-| **Exhaust** | Corruption, Dark Embrace, Feel No Pain | True Grit, Burning Pact, Second Wind, Stoke |
-| **Bloodletting** | Rupture, Inferno, Crimson Mantle | Bloodletting, Breakthrough, Offering, Hemokinesis |
-| **Vulnerable** | Dismantle, Cruelty, Dominate, Colossus | Bash (upgraded), Taunt, Tremble, Uppercut, Molten Fist |
+**Key insight**: You do NOT need a 5-card deck. A 15–20 card deck works if it contains enough exhaust + cycle components. The exhaust engine thins the deck *during combat*.
 
-### Identification Rules
+### Two-Phase Model
 
-1. Count core signal cards in deck
-2. **2+ core signals** from one archetype → committed to that archetype
-3. **1 core signal** → leaning (stay flexible, don't force)
-4. **0 core signals** → uncommitted (pick strongest individual card)
-5. Signals from 2 complementary archetypes → blend (see below)
+| Phase | Timing | Goal |
+|-------|--------|------|
+| **Phase 1: Component Collection** | Act 1 – early Act 2 | Survive fights while collecting exhaust/cycle pieces. Take strong commons that double as infinite components. |
+| **Phase 2: Infinite Execution** | Late Act 2 – Act 3 | Engine online. Stop adding cards. Maximize removal. Exhaust down to loop in combat. |
 
-### Common Blends
+### How the Infinite Works
 
-| Blend | Synergy |
-|-------|---------|
-| Exhaust + Block | Feel No Pain → Block → Body Slam damage |
-| Strength + Bloodletting | Rupture converts self-damage to Strength |
-| Vulnerable + Exhaust | Thin deck for reliable Vulnerable redraw |
-| Block + Vulnerable | Taunt applies Vulnerable → Colossus doubles Block |
+1. Play exhaust engine cards (Corruption, True Grit, Burning Pact, Second Wind) to remove non-essential cards from combat
+2. Feel No Pain generates block as you exhaust → defense
+3. Dark Embrace draws cards as you exhaust → fuel
+4. Once only loop components remain in draw+hand+discard, cycle them infinitely
+5. Each cycle deals damage and/or generates block
+
+### Minimum Loop Example
+
+```
+Bloodletting (+2E, -3HP) → Pommel Strike+ (1E, draw 2) → Spite (0E, draw 1 if lost HP) → Shrug It Off (1E, draw 1)
+Net energy: 0 | Net draw: 4 | With ≤5 active cards = infinite loop
+```
 
 ## Card Tier List
 
-Cards rated independently of archetype. Higher tier = stronger in more contexts.
+Cards rated by contribution to the infinite strategy. Higher tier = higher priority to take.
 
-### S-Tier (Take in any build)
+### S-Tier: Core Infinite Components (Always take)
 
-| Card | Type | Cost | Why |
-|------|------|------|-----|
-| Offering | Skill | 0 | +2 energy, +3 draw, self-damage trigger. Best Ironclad card. |
-| Feed | Attack | 1 | +3 Max HP on kill. Permanent scaling across the run. |
-| Demon Form | Power | 3 | +2 Str/turn. Fits any build as win condition. |
-| Thrash | Attack | 1 | Multi-hit, eats Attacks to scale. Flexible finisher. |
-| Battle Trance | Skill | 0 | Draw 3 (4 upgraded). Universally useful. |
-| Shrug It Off | Skill | 1 | 8 Block + draw 1. Best defensive common. |
-| Corruption | Power | 3 | Skills cost 0 but Exhaust. Engine card. (Ancient) |
-| Break | Attack | 2 | 20 damage + 5 Vulnerable. (Ancient) |
+| Card | Type | Cost | Role in Infinite |
+|------|------|------|------------------|
+| Offering | Skill | 0 | +2E, draw 3(5), exhaust self. Best Ironclad card. Energy + draw + exhaust trigger. |
+| Corruption | Power | 3(2) | Skills cost 0 + auto-exhaust. THE engine card. Every Skill becomes a free exhaust trigger. (Ancient) |
+| Dark Embrace | Power | 2(1) | Draw 1 per exhaust. Keeps the engine running. Without this, exhaust runs dry. |
+| Feel No Pain | Power | 1 | +3(4) Block per exhaust. Passive defense that replaces all block cards once online. |
+| Bloodletting | Skill | 0 | -3HP, +2(3)E. Zero-cost energy. Critical loop component + self-damage trigger. |
+| Burning Pact | Skill | 1 | Exhaust 1, draw 2(3). Directed exhaust + draw. Premium thinning tool. |
+| True Grit | Skill | 1 | 7(9) Block + exhaust 1 random. Early thinning + defense. Core Phase 1 card. |
 
-### A-Tier (Strong, take when fits build or fills weakness)
+### A-Tier: Strong Infinite Support (Take when offered)
 
-| Card | Type | Cost | Why |
-|------|------|------|-----|
-| Headbutt | Attack | 1 | 9 damage + deck manipulation. Recycles key cards. |
-| Brand | Skill | 0 | Deck thinning + self-damage + Strength. |
-| Inflame | Power | 1 | +2 Str, cheap. Core for Strength builds. |
-| Body Slam | Attack | 1 | Damage = Block. Core for Block builds. |
-| Impervious | Skill | 2 | 30 Block. Emergency defense + Body Slam setup. |
-| Dark Embrace | Power | 2 | Draw on Exhaust. Core for Exhaust builds. |
-| Feel No Pain | Power | 1 | Block on Exhaust. Core for Exhaust builds. |
-| Rupture | Power | 1 | Strength on self-damage. Core for Bloodletting. |
-| Barricade | Power | 3 | Block persists. Core for Block builds. |
-| Whirlwind | Attack | X | AoE multi-hit. Best Strength payoff. |
-| Bloodletting | Skill | 0 | -3 HP, +2 energy. Fuel + self-damage trigger. |
-| Pommel Strike | Attack | 1 | 9 damage + draw 1. Efficient cycling. |
+| Card | Type | Cost | Role in Infinite |
+|------|------|------|------------------|
+| Second Wind | Skill | 1 | Exhaust ALL non-Attacks in hand, +5(7) Block each. Mass thinning. Devastating with Corruption. |
+| Pommel Strike | Attack | 1 | 9(10) damage + draw 1(2). Loop component — damage + cycle in one card. |
+| Shrug It Off | Skill | 1 | 8(11) Block + draw 1. Defense + cycle. Phase 1 survival and loop component. |
+| Brand | Skill | 0 | -1HP, exhaust 1, +1(2) Str. Zero-cost directed exhaust + permanent scaling. |
+| Battle Trance | Skill | 0 | Draw 3(4). Zero-cost draw burst. Finds engine pieces fast. |
+| Headbutt | Attack | 1 | 9(12) damage + put discard card on draw top. Recycle key pieces. Pre-infinite consistency. |
+| Forgotten Ritual | Skill | 1 | If exhausted this turn, +3(4)E. Massive energy burst when engine is running. |
+| Expect a Fight | Skill | 2(1) | +1E per Attack in hand. Energy burst for big turns. |
 
-### B-Tier (Solid, take in right context)
+### B-Tier: Solid Role Players (Take in right context)
 
-| Card | Type | Cost | Why |
-|------|------|------|-----|
-| Twin Strike | Attack | 1 | Hits twice. Good early Strength multiplier. |
-| Blood Wall | Skill | 2 | -2 HP, 16 Block. Efficient Block. |
-| True Grit | Skill | 1 | 7 Block + random Exhaust. Early thinning. |
-| Burning Pact | Skill | 1 | Exhaust 1, draw 2. Efficient cycling. |
-| Inferno | Power | 1 | AoE on self-damage. Core for Bloodletting. |
-| Breakthrough | Attack | 1 | -1 HP, 9 AoE. Cheap clear + self-damage. |
-| Iron Wave | Attack | 1 | 5 Block + 5 damage. Balanced filler. |
-| Uppercut | Attack | 2 | 13 damage + Weak + Vulnerable. Versatile. |
-| Second Wind | Skill | 1 | Exhaust non-Attacks, gain Block each. Massive thin. |
-| Dismantle | Attack | 1 | 8 damage, hits twice if Vulnerable. |
-| Flame Barrier | Skill | 2 | 12 Block + retaliate vs multi-hit. |
-| Rage | Skill | 0 | +3 Block per Attack this turn. Free defense. |
-| Hemokinesis | Attack | 1 | -2 HP, 14 damage. Efficient + self-damage. |
+| Card | Type | Cost | Role in Infinite |
+|------|------|------|------------------|
+| Spite | Attack | 0 | 6(9) damage. Draw 1 if lost HP this turn. Zero-cost loop component. |
+| Havoc | Skill | 1(0) | Play top of draw + exhaust it. Random thinning. Excellent when upgraded to 0 cost. |
+| Rage | Skill | 0 | +3(5) Block per Attack this turn. Free defense during attack-heavy loop turns. |
+| Impervious | Skill | 2 | 30(40) Block, exhaust self. Emergency defense. Self-exhausting = clean. |
+| Stoke | Skill | 1(0) | Exhaust hand, draw equal. Mass hand refresh + exhaust. Upgraded (0 cost) is excellent. |
+| Iron Wave | Attack | 1 | 5(7) Block + 5(7) damage. Balanced filler for Phase 1 survival. |
+| Blood Wall | Skill | 2 | -2HP, 16(20) Block. Efficient block for Phase 1 + self-damage synergy. |
+| Hemokinesis | Attack | 1 | -2HP, 14(19) damage. Strong Phase 1 damage + self-damage trigger. |
+| Feed | Attack | 1 | 10(12) damage, +3(4) Max HP on kill, exhaust self. Take 1 copy early for HP buffer. |
+| Ashen Strike | Attack | 1 | 9+ damage scaling with exhaust pile size. Natural finisher in exhaust decks. |
+| Pact's End | Attack | 0 | 17(23) AoE if 3+ exhausted. Zero-cost AoE finisher. |
+| Drum of Battle | Power | 0 | Draw 2 + exhaust top of draw each turn. Free engine piece. |
+| Fiend Fire | Attack | 2 | Exhaust hand, 7(10) damage per card. Nuclear thinning + burst damage. |
+| Armaments | Skill | 1 | 5 Block + upgrade 1(ALL) in hand. Upgraded version upgrades loop pieces mid-combat. |
 
-### C-Tier (Situational, usually skip)
+### C-Tier: Situational (Skip unless filling specific need)
 
-Anger, Bludgeon, Perfected Strike, Rampage, Sword Boomerang, Clash, Setup Strike.
-These cards are either inefficient, anti-synergistic with deck thinning, or too situational.
+| Card | When to Take |
+|------|--------------|
+| Demon Form | Fallback if infinite not assembling by mid-Act 2. |
+| Body Slam | Only with Feel No Pain generating huge block. |
+| Twin Strike | Only if desperate for Act 1 damage. |
+| Inflame | Only if pivoting to Strength fallback. |
+| Whirlwind | Only with excess energy generation. |
+| Uppercut | Only if Vulnerable desperately needed. |
+| Flame Barrier | Only vs multi-hit enemies and no other defense. |
+| Barricade | Skip for infinite. Block build fallback only. |
+| Rupture | Take if already have Bloodletting + self-damage density. Not core to loop. |
+| Inferno | Take if heavy on self-damage. Not core to loop. |
+
+### D-Tier: Never Take
+
+Anger (deck bloat — worst card for infinite), Perfected Strike (anti-thinning), Clash (unreliable), Bludgeon (3E, no synergy), Rampage (doesn't cycle), Sword Boomerang (random, doesn't cycle), Setup Strike (temporary Str, doesn't thin).
+
+### Key Colorless Cards
+
+| Card | Tier | Role |
+|------|------|------|
+| Purity | S | 0-cost, exhaust up to 3(5) from hand. Best thinning card in the game. |
+| Flash of Steel | A | 0-cost, 5 damage + draw 1. Perfect loop component. |
+| Finesse | A | 0-cost, 4 Block + draw 1. Perfect loop component. |
+| Master of Strategy | A | 0-cost, draw 3(4), exhaust self. Free draw burst. |
+| Production | A | 0-cost, +2E, exhaust. Free energy. Upgraded removes exhaust keyword. |
+| Restlessness | A | 0-cost, Retain. If hand empty → draw 2 + gain 2E. Infinite synergy. |
+| Secret Weapon / Technique | B | 0-cost, tutor Attack/Skill from draw. Find missing loop piece. |
+| Thinking Ahead | B | 0-cost, draw 2, put 1 on draw top, exhaust. Cycle + thin. |
+| Dark Shackles | B | 0-cost, -9(15) Str to enemy, exhaust. Emergency defense. |
+| Impatience | B | 0-cost, draw 2 if no Attacks in hand. Conditional but free. |
+| Panache | B | Power. Every 5 cards played = 10(14) AoE. Passive kill during infinite loop. |
 
 ## Weakness Categories
 
 | Weakness | Diagnosis | Solution Cards |
 |----------|-----------|----------------|
-| No AoE | No multi-target damage | Whirlwind, Breakthrough, Conflagration, Thunderclap |
-| No Scaling | No permanent damage increase | Demon Form, Rupture, Inflame, Dominate |
-| No Block | Insufficient defense | Shrug It Off, Impervious, Blood Wall, Flame Barrier |
-| No Draw | Relying on natural draw only | Offering, Battle Trance, Pommel Strike, Burning Pact |
-| No Energy | Frequently energy-starved | Bloodletting, Offering, Expect a Fight |
-| Deck Bloat | 22+ cards, inconsistent draws | Skip cards, prioritize card removal |
-| No Vulnerable | Missing key debuff | Bash (upgrade), Tremble, Uppercut, Thunderclap |
+| No Exhaust Engine | No Corruption/True Grit/Burning Pact by mid-Act 2 | True Grit, Burning Pact (common/uncommon — should appear) |
+| No Draw Engine | No Dark Embrace / Pommel Strike | Pommel Strike, Battle Trance, Shrug It Off |
+| No Energy Gen | Relying on base 3E only | Bloodletting, Offering, Forgotten Ritual |
+| No Defense (Transition) | Engine not ready, taking too much damage | Shrug It Off, Impervious, Iron Wave, Feel No Pain |
+| No Kill Condition | Can loop but not enough damage | Pommel Strike, Spite, Ashen Strike, Pact's End |
+| Deck Bloat | 22+ cards with insufficient exhaust | Stop taking cards. Prioritize removal at every shop. |
+| No AoE | Multi-enemy fights too slow | Pact's End, Whirlwind, Breakthrough |
 
-A card that fixes a genuine weakness is worth taking even if it's not core to the archetype.
+A card that fixes a genuine weakness is worth taking even if it's B-tier.
 
 ## Deck Size Rules
 
-| Deck Size | Card Rewards | Shop Purchases | Card Removal |
-|-----------|-------------|----------------|--------------|
-| < 15 | Take good cards freely | Buy if fits build | Skip removal |
-| 15–18 | Take if fits archetype or fixes weakness | Buy archetype core or S-tier only | Remove Strikes first |
-| 18–22 | Take only if strong for build | Buy only critical missing piece | Remove Strikes then Defends |
-| 22+ | Skip unless S-tier or critical gap | Almost always skip cards | High priority removal |
+| Deck Size | Card Rewards | Card Removal | Notes |
+|-----------|-------------|--------------|-------|
+| < 12 | Take good infinite components freely | Only remove Curses | Small deck loops fast even without full engine |
+| 12–16 | Take if S/A-tier or fixes weakness | Remove Defends first, then Strikes | Sweet spot for Phase 1 |
+| 16–20 | Take only S-tier or critical missing piece | High priority removal | Engine must be strong to thin this many |
+| 20+ | Skip unless critical S-tier gap | Maximum priority removal | Danger zone — infinite may be too slow to activate |
 
-## Act-Specific Adjustments
+## Act-Specific Priorities
 
-| Act | Priority | Reasoning |
-|-----|----------|-----------|
-| Act 1 | Damage, AoE, draw, Vulnerable | Damage race. Kill fast. Take strong commons. |
-| Act 2 | Scaling powers, archetype-defining cards | Longer fights. Build the engine. |
-| Act 3+ | Extremely selective, skip marginal cards | Deck should be lean and consistent. |
+| Act | Priority | Strategy |
+|-----|----------|----------|
+| Act 1 | Damage + early exhaust pieces | Take Pommel Strike, Shrug It Off, True Grit, Burning Pact, Headbutt. Feed for Max HP. Kill fast. |
+| Act 2 | Engine completion | Hunt Dark Embrace, Feel No Pain, Corruption. Second Wind, Brand for mass thinning. Stop taking filler. |
+| Act 3+ | Extremely selective | Only cards that directly improve the loop. Card removal at every shop. Deck should be lean and looping. |
 
 ## Upgrade Priority
 
-When choosing a card to upgrade (Smith, Armaments, etc.):
-
-### Tier 1 — Game-changing upgrades
+### Tier 1 — Game-Changing (Upgrade first)
 
 | Card | Upgrade Effect | Why |
 |------|---------------|-----|
-| Bash | 2→3 Vulnerable | 50% more Vulnerable uptime |
-| Body Slam | Cost 1→0 | Free damage every turn |
-| Barricade | Cost 3→2 | Playable without energy relic |
-| Corruption | Cost 3→2 | Same reason |
-| Dark Embrace | Cost 2→1 | Playable turn 1 |
-| Rupture | +1→+2 Str per trigger | Doubles scaling rate |
-| Demon Form | +2→+3 Str/turn | 50% more scaling |
+| Pommel Strike | Draw 1→2 | Doubles cycle speed. Critical loop upgrade. |
+| Dark Embrace | Cost 2→1 | Playable turn 1. Engine online a turn earlier. |
+| Corruption | Cost 3→2 | Playable with 2E remaining. Massive tempo gain. |
+| Offering | Draw 3→5 | Nearly draws entire deck. Best single upgrade in the game. |
+| Bloodletting | Energy +2→+3 | 50% more energy per loop cycle. |
+| Feel No Pain | Block 3→4 | 33% more block per exhaust. Compounds over many exhausts. |
 
-### Tier 2 — Strong upgrades
+### Tier 2 — Strong
 
 | Card | Upgrade Effect |
 |------|---------------|
-| Offering | Draw 3→5 |
-| Shrug It Off | 8→11 Block |
-| Impervious | 30→40 Block |
-| Feel No Pain | 3→4 Block per Exhaust |
-| Inflame | +2→+3 Strength |
-| Blood Wall | 16→20 Block |
-| Whirlwind | 5→8 per hit |
+| Burning Pact | Draw 2→3 |
+| Second Wind | Block 5→7 per card |
+| Shrug It Off | Block 8→11 |
+| Havoc | Cost 1→0 |
+| Stoke | Cost 1→0 |
+| Spite | Damage 6→9 |
+| Impervious | Block 30→40 |
+| Brand | Str +1→+2 |
+| Bash | Vuln 2→3 (useful in Phase 1) |
+| True Grit | Block 7→9 |
 
-### Tier 3 — Decent upgrades
+### Tier 3 — Decent
 
-Most attacks (+damage), most skills (+block), Burning Pact (draw 2→3), True Grit (7→9 Block + choose instead of random).
+Most other attacks (+damage), most other skills (+block).
 
-### Never upgrade
+### Never Upgrade
 
 Strike and Defend — remove them instead. Also skip cards you plan to remove soon.
 
 ## Relic Evaluation
 
-### Universal High-Value Relics
+### S-Tier (Always take/buy)
 
-| Relic | Tier | Why |
-|-------|------|-----|
-| Energy relics (Lantern, Ice Cream, etc.) | S | More energy = more cards = more power |
-| Lizard Tail | S | Death prevention |
-| Gambling Chip | A | Fix bad opening hands |
-| Runic Pyramid | A | Perfect hand control |
-| Bag of Preparation | A | +2 cards turn 1 |
-| Snecko Eye | A | +2 draw (Confused is manageable) |
+| Relic | Why |
+|-------|-----|
+| Energy relics (Lantern, Ice Cream, etc.) | More energy = faster loop activation |
+| Unceasing Top | Hand empties during loop → auto-draw. CRITICAL infinite enabler. |
+| Runic Pyramid | Keep loop pieces across turns. Find engine faster. |
+| Gambling Chip | Fix opening hand to find engine pieces turn 1. |
+| Charon's Ashes | 3 AoE damage per exhaust. Passive kill during infinite loop. |
+| Lizard Tail | Death prevention. Run saver. |
 
-### Archetype-Specific Relics
+### A-Tier (High value for infinite)
 
-| Archetype | High-Value Relics |
-|-----------|-------------------|
-| Strength | Vajra, Ruined Helmet, Brimstone, Sling of Courage, Shuriken |
-| Block | Anchor, Horn Cleat, Cloak Clasp, Vambrace, Pael's Legion, Fresnel Lens |
-| Exhaust | Charon's Ashes, Burning Sticks, Joss Paper, Forgotten Soul |
-| Bloodletting | Centennial Puzzle, Demon Tongue, Self-Forming Clay, Ruined Helmet |
-| Vulnerable | Paper Phrog, Bag of Marbles, Unsettling Lamp, Hand Drill |
+| Relic | Why |
+|-------|-----|
+| Burning Sticks | First Skill exhausted → copy to hand. Extra engine fuel. |
+| Mummified Hand | Free card per Power played. Helps setup turn. |
+| Game Piece | Draw 1 per Power played. Finds engine pieces faster. |
+| Pendulum | Draw 1 on draw pile shuffle. Triggers during loop cycling. |
+| Iron Club | Draw 1 every 4 cards played. Passive draw during loop. |
+| Toasty Mittens | Exhaust top of draw + 1 Str each turn. Free thinning + scaling. |
+| Joss Paper | Draw 1 every 5 exhausts. Passive fuel during big exhaust turns. |
+| Bag of Preparation | +2 draw turn 1. Find engine pieces early. |
+| Centennial Puzzle | Draw 3 first HP loss. Pairs with Bloodletting/Offering. |
+| Gremlin Horn | +1E + draw 1 per enemy kill. Huge in multi-enemy fights. |
+| Snecko Eye | +2 draw (Confused). Loop cards are mostly 0–1 cost, Confused barely hurts. |
+
+### B-Tier (Helpful)
+
+| Relic | Why |
+|-------|-----|
+| Forgotten Soul | 1 damage per exhaust. Minor but adds up. |
+| Pantograph | 25 HP at boss start. Survival buffer. |
+| Kunai / Shuriken | Dex/Str per 3 Attacks. Triggers during loop. |
+| Letter Opener | 5 AoE damage per 3 Skills. Triggers on exhaust-heavy turns. |
+| Ornamental Fan | 4 Block per 3 Attacks. Defense during loop. |
+| Anchor / Horn Cleat | Early Block to survive until engine runs. |
+| Vajra | +1 Str. Always useful. |
+| Tungsten Rod | -1 HP loss. Helps with self-damage costs. |
+
+### Relic Traps (AVOID for infinite)
+
+| Relic | Why Avoid |
+|-------|-----------|
+| Velvet Choker | 6 card limit per turn. **KILLS infinite loop. Never take.** |
+| Fiddle | Cannot draw during turn. **KILLS infinite loop. Never take.** |
+| Ectoplasm | No gold = no card removal at shops. Only take if deck is already very lean. |
+| Sozu | No potions. Acceptable only if infinite is already online. |
+| Philosopher's Stone | Enemies +1 Str. Risky if loop takes time to activate. |
+| Spiked Gauntlets | Powers cost +1. Hurts engine setup (Dark Embrace 2→3, Feel No Pain 1→2). |
 
 ## Gold Efficiency (Shop)
 
-### Purchase Value Thresholds
+### Purchase Priority Order
 
-| Purchase Type | Condition | Buy? |
-|---------------|-----------|------|
-| S-tier card | Any price | Always |
-| Archetype core card | ≤ 150g, not already owned | Yes |
-| Card removal | Any price, deck > 15 cards | Yes (see Removal Priority) |
-| A-tier card (fits build) | ≤ 120g, fills a gap | Yes |
-| Archetype-synergy relic | ≤ 200g | Yes |
-| Universal relic (energy etc.) | ≤ 250g | Yes |
-| Useful potion | ≤ 75g, boss in next 2-3 floors | Yes |
-| B-tier card | ≤ 80g, critical weakness fix | Maybe |
-| Non-synergy relic/card | Any price | Skip |
+| Priority | Purchase | Condition |
+|----------|----------|-----------|
+| 1 | **Card removal** | Always buy. Most important shop action for infinite. |
+| 2 | S-tier infinite card | Any price |
+| 3 | A-tier card (fits build) | ≤ 150g |
+| 4 | Energy relic / Unceasing Top | ≤ 300g (worth premium) |
+| 5 | Infinite-synergy relic | ≤ 200g |
+| 6 | Useful potion (boss in 2–3 floors) | ≤ 75g |
+| 7 | B-tier card (critical gap) | ≤ 80g |
+| 8 | Non-synergy relic | Skip |
 
 ### Gold Budget by Act
 
 | Act | Reserve | Strategy |
 |-----|---------|----------|
-| Act 1 | Keep ≥ 50g | Card removal + 1 core purchase max |
-| Act 2 | Keep ≥ 75g | Build completion, 1-2 purchases |
-| Act 3+ | Spend freely | No future shops guaranteed |
+| Act 1 | Keep ≥ 75g | Prioritize card removal. Buy 1 core piece max. |
+| Act 2 | Keep ≥ 100g | Card removal + engine completion. Critical shopping act. |
+| Act 3+ | Spend freely | Deck should be complete. Remove remaining filler. |
 
-### Card Removal Priority (Shop)
+### Card Removal Priority
 
-1. **Curses** — always remove
-2. **Strikes** — highest priority basic removal
-3. **Defends** — next priority (skip if Block build)
+1. **Curses** — always remove first
+2. **Defends** — highest priority basic removal
+3. **Strikes** — next priority after Defends are gone
 4. **Status cards** stuck in deck
-5. **Skip** if deck < 15 cards or all cards are useful
+5. **Non-infinite cards** added by mistake
+6. **Skip** if all remaining cards serve the infinite
+
+> **Why Defends before Strikes**: Ironclad has 80 HP + Burning Blood heals 6. In Phase 1 you need damage to kill fast — Strikes at least deal 6 damage. Defends cost 1E for zero offensive contribution. Once Feel No Pain is online, exhaust generates all the block you need, making Defends completely redundant. With Corruption, Defends auto-exhaust (free triggers), but they still dilute draws and slow engine activation.
+
+## Infinite Readiness Detection
+
+Track these components in run state to determine loop viability:
+
+### Required Components (need all 3 categories)
+
+| Category | Cards | Minimum |
+|----------|-------|---------|
+| **Exhaust** | True Grit, Burning Pact, Second Wind, Corruption, Brand, Stoke, Havoc | ≥ 2 exhaust sources |
+| **Draw/Cycle** | Pommel Strike, Shrug It Off, Battle Trance, Dark Embrace | ≥ 2 draw sources |
+| **Energy** | Bloodletting, Offering, Forgotten Ritual, Expect a Fight | ≥ 1 energy source |
+
+### Bonus Accelerators
+
+| Component | Effect |
+|-----------|--------|
+| Corruption | Skills auto-exhaust → instant engine |
+| Dark Embrace | Draw per exhaust → self-fueling loop |
+| Feel No Pain | Block per exhaust → no defense cards needed |
+| Unceasing Top | Auto-draw on empty hand → guaranteed loop |
+
+### Readiness Levels
+
+| Level | Criteria | Behavior |
+|-------|----------|----------|
+| **Not Started** | 0–1 infinite components | Play normally, take strong cards for survival |
+| **Building** | 2–4 components, missing key category | Prioritize missing category. Still take survival cards if needed. |
+| **Almost Ready** | All 3 categories covered, deck 15–20 | Stop adding non-S-tier cards. Maximize removal at every shop. |
+| **Infinite Ready** | All categories + deck ≤ 16, or Corruption online | Fully commit. In combat, exhaust to loop. Skip all card rewards. |
+
+## Fallback Strategy
+
+If by mid-Act 2 you have < 2 infinite components:
+
+1. **Exhaust Midrange**: Use exhaust cards for value (Feel No Pain + True Grit) without full loop. Ashen Strike / Pact's End as finishers.
+2. **Strength Scaling**: Pivot to Demon Form + multi-hit (Whirlwind, Twin Strike, Thrash).
+3. **Block + Body Slam**: If heavy on block cards, add Body Slam as win condition.
+
+The fallback is rarely needed — exhaust components (True Grit, Burning Pact, Pommel Strike, Shrug It Off) are common/uncommon and appear frequently.
 
 ## Anti-Patterns
 
 ### Cards to Almost Never Take
 
-- 3rd+ copy of any common (unless Shrug It Off)
-- Expensive cards (3 energy) without energy support
-- Cards that anti-synergize with current build
-- Anger (deck bloat), Clash (unreliable), Perfected Strike (anti-thinning)
+- 3rd+ copy of any common (deck bloat kills infinite consistency)
+- 3-cost cards without energy support (too expensive for loop)
+- Cards that add copies to deck (Anger = infinite's worst enemy)
+- Perfected Strike (anti-thinning philosophy)
 
-### Relic Traps
+### Decision Traps
 
-- Ectoplasm without strong deck already (no gold = no shop)
-- Sozu if potions are still useful
-- Philosopher's Stone vs scaling enemies
-- Velvet Choker in high-card-count builds
+- Taking "good" non-infinite cards (e.g., Demon Form when exhaust engine is assembling)
+- Skipping card removal to buy a relic (removal is almost always higher priority)
+- Being too conservative in Act 1 (need to take early components aggressively)
+- Holding Strikes/Defends too long (remove at first opportunity)
+
+## Doormaker Boss Counter
+
+Act 3 boss Doormaker has turns that prohibit card draw, which counters draw-dependent infinite loops.
+
+**Countermeasures:**
+- Keep 0-cost attacks in loop (Spite, Pact's End) — playable without draw
+- Kill within first 3–4 turns before the anti-draw turn activates
+- Pre-build block on previous turns via Feel No Pain exhaust triggers
+- Use Impervious or block potions to survive the restricted turn

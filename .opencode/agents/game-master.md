@@ -70,12 +70,12 @@ When dispatching, include context in the prompt:
 ```
 Task(
   description="Execute combat",
-  prompt="Screen: COMBAT. Act 1 Floor 3, encounter: jaw_worm. HP: 72/80. Read run-state.md for build context. Execute full combat, report outcome (win/loss, final HP, turns).",
+  prompt="Screen: COMBAT. Act 1 Floor 3, encounter: jaw_worm. HP: 72/80. Infinite Readiness: Building (2 Exhaust, 1 Draw, 0 Energy). Read run-state.md for full build context. Execute full combat, report outcome (win/loss, final HP, turns, infinite loop achieved?).",
   subagent_type="combat"
 )
 ```
 
-Always include: screen type, act/floor, HP, and reminder to read `run-state.md`.
+Always include: screen type, act/floor, HP, **Infinite Readiness level + component summary**, and reminder to read `run-state.md`.
 
 ## Context Tracking
 
@@ -113,6 +113,8 @@ Report: victory/defeat, floor reached, score. Use `return_to_menu` if continuing
 - Check for new run detection
 - Initialize or read `run-state.md`
 - Update Act/floor progression after map transitions
+- Track **Infinite Readiness** level changes after Deck-Building Agent returns
+- Include readiness level when dispatching to subagents
 
 ## Error Recovery
 

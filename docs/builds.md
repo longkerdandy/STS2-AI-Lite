@@ -1,287 +1,260 @@
-# Ironclad Build Strategies
+# Ironclad Build Strategy: Progressive Infinite
 
 > AI decision-making guide for deck building across a run.
 > Used during card reward evaluation and long-term planning.
-> Based on Slay the Spire 2 community meta (March 2026).
+> Based on Slay the Spire 2 community meta — Ironclad's dominant A10+ strategy.
+> For card tiers, relic evaluation, and all numeric thresholds, see `docs/deck-building-framework.md`.
 
 ## Overview
 
-Ironclad has five viable archetypes. A successful run usually commits to **one core archetype** with **support from one or two others**. Forcing a single archetype without the right cards leads to failure. Adapt to what the game offers.
+Ironclad's strongest strategy is **progressive infinite** — building an exhaust-based engine that thins the active deck during combat until a small set of cards loops indefinitely, killing any enemy regardless of HP.
 
-**Golden rule**: Pick the core archetype based on what cards appear in Act 1. Do NOT pre-commit before seeing rewards.
+**Why infinite?** Community consensus: ~80% of successful A10 Ironclad runs go infinite. The exhaust components are common/uncommon rarity, making the strategy consistently achievable without relying on rare card luck.
 
-**Deck size sweet spot**: 15–22 cards. Beyond that, you need strong draw engines to find your key cards reliably.
+**Golden Rule**: Always build toward infinite. The components you need (True Grit, Burning Pact, Pommel Strike, Shrug It Off, Bloodletting) are strong standalone cards that carry Phase 1 even before the loop is assembled.
 
-## Build Identification
+## The Infinite Engine
 
-After Act 1, assess what you have and commit. Use this table:
+### Core Mechanic
 
-| Signal | Likely Build |
-|--------|-------------|
-| Inflame, Demon Form, multi-hit cards (Twin Strike, Whirlwind) | Strength |
-| Body Slam, Shrug It Off, Blood Wall, Barricade | Block / Body Slam |
-| Corruption, Dark Embrace, Feel No Pain, True Grit | Exhaust |
-| Rupture, Inferno, Bloodletting, Crimson Mantle | Bloodletting / Self-Damage |
-| Dismantle, Taunt, Tremble, Cruelty, Dominate | Vulnerable |
+The infinite does NOT require a 5-card deck. It works by exhausting non-essential cards *during combat*:
 
-If you see strong overlap (e.g., Feel No Pain + Body Slam), blend those archetypes. This is normal and often stronger than purity.
+```
+Turn 1-3: Play engine powers (Dark Embrace, Feel No Pain, Corruption)
+Turn 2-4: Exhaust junk cards (True Grit, Burning Pact, Second Wind)
+Turn 3-5: Only loop components remain → cycle infinitely
+Each cycle: Deal damage + generate block + draw back into the loop
+```
 
-### Common Blends
+### Engine Components
 
-- **Exhaust + Block**: Feel No Pain generates Block → feeds Body Slam. Second Wind thins deck and generates Block.
-- **Vulnerable + Exhaust**: Exhaust thins deck so you redraw Vulnerable enablers reliably.
-- **Strength + Bloodletting**: Rupture converts self-damage into Strength. Natural overlap.
-- **Block + Vulnerable**: Taunt applies Vulnerable → Colossus deals massive damage from Block.
+The engine has three mandatory categories:
 
-## Build 1: Strength
+| Category | Function | Key Cards |
+|----------|----------|-----------|
+| **Exhaust** | Remove non-loop cards from combat | True Grit, Burning Pact, Second Wind, Brand, Corruption, Stoke, Havoc |
+| **Draw/Cycle** | Find and recycle loop components | Pommel Strike, Shrug It Off, Dark Embrace, Battle Trance, Headbutt |
+| **Energy** | Fuel the loop each cycle | Bloodletting, Offering, Forgotten Ritual, Expect a Fight |
 
-**Strategy**: Stack Strength buffs, then unleash multi-hit attacks where each hit gains the full Strength bonus.
+### Engine Accelerators (Powers)
 
-**Why it works**: Strength is permanent (doesn't expire unless debuffed). Multi-hit attacks multiply the bonus. Simple, reliable scaling that dominates long fights.
+These powers transform the engine from "good" to "unstoppable":
 
-### Core Cards
+| Power | Effect | Priority |
+|-------|--------|----------|
+| **Corruption** | Skills cost 0 + auto-exhaust. Instantly activates the engine. | Take whenever seen (Ancient rarity). |
+| **Dark Embrace** | Draw 1 per exhaust. Self-fueling — each exhaust finds the next card. | Must-take. Without this, engine stalls. |
+| **Feel No Pain** | +3(4) Block per exhaust. All defense comes from this. No block cards needed. | Must-take. Removes the need for defensive cards entirely. |
 
-| Card | Role | Priority |
-|------|------|----------|
-| Demon Form | Passive +2 Str/turn (3 upgraded). The ultimate scaling engine. | Must-take (Rare) |
-| Inflame | Instant +2 Str for 1 energy. Cheap and effective. | High |
-| Whirlwind | AoE multi-hit. Best payoff card for Strength stacking. | High |
-| Twin Strike | Hits twice, cheap at 1 energy. Good early damage. | Medium (early game) |
-| Thrash | Multi-hit, eats Strength-empowered cards to scale exponentially. Flexible. | High |
-| Brand | Thins deck (exhausts a Strike/Defend), self-damage triggers Rupture if present. | Medium |
+### Example Loops
 
-### Support Cards
+**Standard Loop (5 active cards):**
+```
+Bloodletting (0E, +2E) → Pommel Strike+ (1E, draw 2) → Spite (0E, draw 1) → Shrug It Off (1E, draw 1)
+→ [cycle back to Bloodletting]
+Net: 0 energy, 4 draws, damage + block each cycle
+```
 
-- **Offering**: +2 energy, +3 draw, lose 6 HP. Best card in Ironclad's kit for any build.
-- **Battle Trance**: Draw 3 cards. Frontloaded draw.
-- **Headbutt**: 9 damage + puts a card from discard on top of draw. Recycles Demon Form setup.
+**Corruption Loop (any deck size):**
+```
+With Corruption + Dark Embrace + Feel No Pain active:
+Play any Skill → costs 0, exhausts, draws 1, gains 3+ Block
+→ Repeat until only Attacks remain
+→ Play Attacks, discard/draw, repeat
+```
 
-### Key Relics
+**Zero-Cost Loop (with Unceasing Top relic):**
+```
+Bloodletting (0E, +2E) → Spite (0E) → [hand empty → draw 1]
+→ Repeat with any 0-cost attacks
+```
 
-| Relic | Effect |
-|-------|--------|
-| Vajra | +1 Strength at start of combat |
-| Ruined Helmet | First time you gain Strength each combat, double the amount |
-| Brimstone | +2 Str/turn for you, +1 Str for all enemies. Usually net positive. |
-| Sling of Courage | Start each Elite combat with 2 Strength |
-| Sword of Jade | +3 Strength (specific trigger) |
-| Anchor / Horn Cleat | Extra Block to buy time for Demon Form setup turn |
+## Phase 1: Component Collection (Act 1 – Early Act 2)
 
-### How to Play
+### Goals
+- Survive fights while collecting exhaust/cycle/energy components
+- Remove Defends at every shop opportunity
+- Take strong commons that double as loop pieces
 
-1. **Act 1**: Take Twin Strike, Inflame, Whirlwind if offered. Prioritize damage to survive.
-2. **Act 2**: Look for Demon Form, Thrash, Brand. Start building the engine.
-3. **Act 3+**: Be selective. Skip weak cards. The deck should be lean and consistent.
-4. **In combat**: Play Strength buffs before attacks. Use Vulnerable to amplify. Multi-hit cards are your finishers.
+### Card Priority
 
-### Weakness
+| Priority | Cards | Reasoning |
+|----------|-------|-----------|
+| **Always take** | Offering, True Grit, Burning Pact, Bloodletting, Feel No Pain, Dark Embrace | Core engine pieces. These ARE the strategy. |
+| **High** | Pommel Strike, Shrug It Off, Headbutt, Brand, Second Wind | Loop components + Phase 1 survival |
+| **Medium** | Battle Trance, Feed (1 copy), Spite, Iron Wave, Hemokinesis | Draw burst / HP buffer / Phase 1 filler |
+| **Low** | Other attacks for survival | Only if deck desperately needs damage output |
+| **Skip** | Non-cycling cards, expensive cards, deck-bloating cards | Anger, Bludgeon, Rampage, Perfected Strike, etc. |
 
-- Demon Form costs 3 energy — the setup turn is vulnerable. Need Block cards or relics to survive it.
-- Weak against enemies that remove buffs or apply constant Weak debuff.
+### Act 1 Gameplay
 
----
+1. **Floors 1–3**: Take Pommel Strike, True Grit, Shrug It Off if offered. These are strong standalone AND loop pieces.
+2. **First shop**: Remove a Defend. Buy Burning Pact or Bloodletting if available.
+3. **Floors 4–7**: Continue collecting. Headbutt helps recycle key cards. Feed gives HP buffer.
+4. **Act 1 boss**: Use potions aggressively. Survive with current tools.
 
-## Build 2: Block / Body Slam
+### Deck Size Target: 12–16 cards by end of Act 1
 
-**Strategy**: Stack Block using defensive cards, keep it across turns with Barricade/Unmovable, then convert it into damage via Body Slam.
+## Phase 2: Infinite Execution (Late Act 2 – Act 3)
 
-**Why it works**: Exceptional survivability. Body Slam turns defense into offense — you don't need dedicated attack cards. Grinds out any fight.
+### Goals
+- Complete the engine (all 3 categories filled)
+- Stop adding non-S-tier cards
+- Maximize card removal at every shop
+- Begin executing infinite loops in combat
 
-### Core Cards
+### Transition Signals
 
-| Card | Role | Priority |
-|------|------|----------|
-| Body Slam | Deal damage equal to your Block. Core win condition. | Must-take |
-| Barricade | Block doesn't expire at end of turn. Enables huge Body Slams. | Must-take (Rare) |
-| Shrug It Off | 8 Block + draw 1 card. Best defensive common. | High |
-| Blood Wall | Lose 2 HP, gain 15 Block. Efficient. | High |
-| Unmovable | Block is not removed at start of turn (retain Block). | High |
-| Impervious | 30 Block for 2 energy. Emergency button / Body Slam setup. | High |
+Move to Phase 2 when you have:
+- ≥ 2 exhaust sources
+- ≥ 2 draw/cycle sources
+- ≥ 1 energy source beyond base 3
+- OR Corruption (immediately activates Phase 2 regardless of other pieces)
 
-### Support Cards
+### Act 2 Gameplay
 
-- **True Grit**: 7 Block + exhaust a random card. Thins deck.
-- **Flame Barrier**: 12 Block + deals 4 damage per incoming hit. Great vs multi-hitters.
-- **Juggernaut**: Deals damage each time you gain Block. Passive offense engine.
-- **Crimson Mantle**: Lose 1 HP/turn, gain Block. Cheap sustained defense.
-- **Taunt**: Apply 1 Vulnerable (2 upgraded). Pairs with Colossus.
-- **Colossus**: When enemy is Vulnerable, gain Block equal to your current Block.
+1. **Hunt for engine powers**: Dark Embrace and Feel No Pain transform the deck. Corruption is auto-take.
+2. **Mass thinning**: Second Wind + Brand enable rapid deck thinning in combat.
+3. **Shop priority**: Card removal > engine completion > everything else.
+4. **Skip marginal cards**: Even B-tier cards add noise. Only take S/A-tier or critical gap fills.
 
-### Key Relics
+### Act 3+ Gameplay
 
-| Relic | Effect |
-|-------|--------|
-| Cloak Clasp | Gain Block at end of turn. Triggers Juggernaut. |
-| Fresnel Lens | Increases Block gained from cards |
-| Vambrace | Retain Block (similar to Unmovable) |
-| Pael's Legion | Gain Block passively — compounds with Barricade |
-| Bronze Scales | Deal damage when hit. Pairs with tanking strategy. |
-| Anchor | 10 Block at start of combat |
+1. **Deck should be looping**: If engine is online, skip ALL card rewards.
+2. **Every shop**: Remove a card. Removal is the most valuable shop action.
+3. **Combat approach**: Set up engine → exhaust to loop → kill.
+4. **Boss preparation**: Ensure loop can handle the damage race. Potions for turn 1 survival while setting up.
 
-### How to Play
+### Deck Size Target: 14–18 cards (engine thins the rest in combat)
 
-1. **Act 1**: Take Shrug It Off, Body Slam, Blood Wall. Prioritize survival.
-2. **Act 2**: Look for Barricade, Unmovable, Impervious. Pivot to Block-focused if you see them.
-3. **Act 3+**: Stack Block, Body Slam for kills. Skip attack cards — Block IS your offense.
-4. **In combat**: Build Block first, attack with Body Slam when Block is high. Don't rush damage.
+## Combat Execution (Infinite)
 
-### Weakness
+### Setup Phase (Turns 1–3)
 
-- Slow to kill. Vulnerable to scaling enemies that outpace your Block generation.
-- Barricade costs 3 energy and is Rare — not always available. Without it, Block strategy is weaker.
+1. **Turn 1**: Play powers — Dark Embrace, Feel No Pain, Corruption (if affordable). Use Offering/Bloodletting for energy.
+2. **Turn 2**: Begin exhausting — True Grit, Burning Pact, Second Wind. Let Feel No Pain generate block.
+3. **Turn 3**: Active deck should be thin enough to start cycling loop components.
 
----
+### Loop Phase (Turn 3+)
 
-## Build 3: Exhaust
+1. **Identify loop**: Check which cards remain in draw + hand + discard.
+2. **Execute cycle**: Play loop components in order. Each cycle should net 0 energy and draw the full loop back.
+3. **Kill**: Each cycle deals damage. Continue until all enemies are dead.
+4. **Block**: Feel No Pain triggers during exhaust provide all necessary defense.
 
-**Strategy**: Exhaust cards to trigger powerful synergies (Block from Feel No Pain, draw from Dark Embrace), thin your deck to only draw your best cards, then finish with Ashen Strike or Body Slam.
+### Key Combat Principles
 
-**Why it works**: Highest ceiling build. Thinning the deck means you draw your best cards every turn. Exhaust triggers generate enormous value when the engine is running.
+- **Don't block manually during setup** — Feel No Pain handles defense once exhausting begins.
+- **Exhaust aggressively** — every non-loop card removed brings you closer to infinite.
+- **Energy first** — play Bloodletting/Offering before other cards to maximize plays per turn.
+- **Draw before exhaust** — use Battle Trance/Pommel Strike to find exhaust tools.
+- **Attacks last** — play attacks after all exhaust/draw/energy cards to maximize damage from accumulated Strength.
 
-### Core Cards
+## Key Relics
 
-| Card | Role | Priority |
-|------|------|----------|
-| Corruption | All Skills cost 0 but Exhaust. THE engine card. | Must-take (Rare) |
-| Dark Embrace | Draw 1 card whenever you Exhaust. Keeps the engine running. | Must-take |
-| Feel No Pain | Gain 3 Block (4 upgraded) whenever you Exhaust. Passive defense. | Must-take |
-| True Grit | 7 Block + Exhaust a card. Early thinner. | High |
-| Burning Pact | Draw 2 cards, Exhaust 1. Efficient cycling. | High |
-| Second Wind | Exhaust all non-Attack cards in hand, gain 5 Block each. Massive thin + Block. | High |
+### Infinite-Critical Relics
 
-### Finisher Cards
+| Relic | Effect | Impact |
+|-------|--------|--------|
+| Unceasing Top | Draw 1 when hand empty | Guarantees loop with 0-cost cards. Top infinite relic. |
+| Charon's Ashes | 3 AoE damage per exhaust | Passive kill condition. Each exhaust = damage to ALL enemies. |
+| Runic Pyramid | Don't discard hand | Hold loop pieces across turns during setup. |
+| Ice Cream | Energy persists | Bank energy from Bloodletting for big setup turns. |
+| Burning Sticks | Copy first Skill exhausted | Extra fuel for the engine each combat. |
 
-- **Ashen Strike**: 9 damage + 3 per card in Exhaust pile. Grows throughout combat.
-- **Pact's End**: 17 AoE damage for 0 energy. Requires Exhaust setup.
-- **Body Slam**: Works perfectly — Feel No Pain generates Block, Body Slam converts it to damage.
-- **Fiend Fire**: Exhaust entire hand for massive single-target damage. Also fuels Ashen Strike.
+### Strong Support Relics
 
-### Key Relics
+| Relic | Why |
+|-------|-----|
+| Gambling Chip | Mulligan opening hand for engine pieces |
+| Mummified Hand | Free card when Power played (helps setup) |
+| Toasty Mittens | Free exhaust + Str each turn |
+| Centennial Puzzle | Draw 3 on first HP loss (Bloodletting trigger) |
+| Pendulum | Draw on shuffle (fires during loop cycling) |
 
-| Relic | Effect |
-|-------|--------|
-| Charon's Ashes | 3 damage to ALL enemies each time you Exhaust. Passive AoE. |
-| Burning Sticks | Smaller-scale Dead Branch replacement. |
-| Forgotten Soul | Minor damage on Exhaust |
-| Joss Paper | Extra draw on Exhaust |
+### Relics to AVOID
 
-### How to Play
+| Relic | Why |
+|-------|-----|
+| **Velvet Choker** | 6 card limit per turn KILLS the infinite loop. Never take. |
+| **Fiddle** | Cannot draw during turn. KILLS infinite. Never take. |
+| Spiked Gauntlets | Powers cost +1. Delays engine setup by 1–2 turns. |
 
-1. **Act 1**: Take True Grit, Burning Pact for early thinning. Take Feel No Pain if offered.
-2. **Act 2**: Hunt for Corruption, Dark Embrace. These transform the deck.
-3. **Act 3+**: Be careful adding cards — the deck should be lean. Finishers only.
-4. **In combat**: Play powers first (Corruption, Dark Embrace, Feel No Pain), then Exhaust everything. Body Slam or Ashen Strike to finish.
+## Card Removal Strategy
 
-### Weakness
+**Priority order at shops**: Defends → Strikes → Status → Non-infinite cards
 
-- Requires multiple specific pieces (Corruption + Dark Embrace + Feel No Pain). Incomplete engine is clunky.
-- Without Dead Branch (removed in STS2), the deck runs out of cards faster. Need finishers before you Exhaust everything.
-- Fiend Fire / Second Wind timing requires careful hand management.
+| Card | Remove When | Reasoning |
+|------|------------|-----------|
+| Defend | Always first | 1E for no damage, no cycle. Feel No Pain replaces block. |
+| Strike | After Defends gone | At least deals 6 damage, but doesn't cycle or thin. |
+| Non-infinite filler | When deck is Phase 2 | Any card not part of the loop is noise. |
 
----
+**Exception**: Keep 1 Defend if you have NO block source and are still in Phase 1.
 
-## Build 4: Bloodletting / Self-Damage
+**Target**: Remove all 4 Defends + all 5 Strikes over the run = deck is entirely engine + loop.
 
-**Strategy**: Use cards that cost HP to gain Strength (via Rupture), energy (via Bloodletting), and AoE damage (via Inferno). Ironclad's Burning Blood relic heals 6 HP post-combat, offsetting the self-damage.
+## Upgrade Strategy
 
-**Why it works**: Self-damage cards are over-statted for their energy cost. Rupture converts HP loss into permanent Strength. Inferno adds passive AoE. The self-damage IS the scaling engine.
+Upgrade infinite components, not survival cards:
 
-### Core Cards
+| Priority | Cards | Why |
+|----------|-------|-----|
+| **First** | Pommel Strike (+1 draw), Offering (+2 draw), Dark Embrace (-1 cost) | These upgrades directly enable or accelerate the loop |
+| **Second** | Corruption (-1 cost), Bloodletting (+1E), Feel No Pain (+1 Block) | Engine efficiency |
+| **Third** | Burning Pact (+1 draw), Shrug It Off (+3 Block), Second Wind (+2 Block/card) | Support upgrades |
+| **Never** | Strike, Defend | Remove, don't upgrade |
 
-| Card | Role | Priority |
-|------|------|----------|
-| Rupture | +1 Str whenever you lose HP on your turn (+2 upgraded). THE engine. | Must-take |
-| Inferno | AoE damage whenever you lose HP on your turn. Passive board control. | Must-take |
-| Bloodletting | Lose 3 HP, gain 2 energy (3 upgraded). Fuel for big turns. | High |
-| Breakthrough | Lose 1 HP, 9 AoE damage. Cheap self-damage trigger + good damage. | High |
-| Crimson Mantle | Lose 1 HP/turn, gain Block. Guaranteed Rupture trigger every turn. | High |
-| Offering | Lose 6 HP, +2 energy, draw 3. Best card in the game. Triple Rupture trigger potential. | Must-take |
+At rest sites: SMITH if you have a Tier 1 upgrade target. HEAL only if HP < 40%.
 
-### Support Cards
+## Fallback Strategies
 
-- **Brand**: Exhausts a card, deals self-damage. Triggers Rupture + thins deck.
-- **Hemokinesis**: Lose 2 HP, deal 14 damage. Good single-target.
-- **Feed**: 10 damage, if fatal +3 Max HP. Offsets HP loss over the run.
-- **Tear Asunder**: Damage based on times you've been damaged this combat. Scales naturally in this build.
+If by mid-Act 2 the infinite is not assembling (< 2 components):
 
-### Key Relics
+### Exhaust Midrange
+- **When**: Have Feel No Pain / True Grit but no draw engine
+- **How**: Use exhaust for value (block from FNP, thinning from True Grit) without looping
+- **Finishers**: Ashen Strike (scales with exhaust pile), Pact's End (0-cost AoE), Fiend Fire (burst)
 
-| Relic | Effect |
-|-------|--------|
-| Centennial Puzzle | Draw cards when you lose HP. Free draw engine. |
-| Demon Tongue | First time you lose HP on your turn, heal that amount. Negates one self-damage per turn. |
-| Self-Forming Clay | Gain Block when you lose HP. Defensive cushion. |
-| Ruined Helmet | First Strength gain is doubled. Huge with Rupture. |
+### Strength Scaling
+- **When**: Found Demon Form / Inflame but no exhaust pieces
+- **How**: Stack Strength, attack with multi-hit cards
+- **Core**: Demon Form → Whirlwind / Thrash / Twin Strike
 
-### How to Play
+### Block + Body Slam
+- **When**: Heavy on block cards (Shrug It Off, Blood Wall, Impervious)
+- **How**: Accumulate block, convert to damage via Body Slam
+- **Core**: Body Slam + Barricade + block generators
 
-1. **Act 1**: Take Rupture and Breakthrough early. Bloodletting if you have draw to support it.
-2. **Act 2**: Look for Inferno, Crimson Mantle, Offering. Get the engine online.
-3. **Act 3+**: Feed to offset HP loss. Tear Asunder as finisher.
-4. **In combat**: Play Rupture/Inferno powers first. Then play self-damage cards freely — each one makes you stronger.
+These fallbacks are rarely needed. The exhaust components are common/uncommon — in most runs, you will find enough to go infinite without trying.
 
-### Weakness
+## Doormaker Boss (Act 3)
 
-- HP loss is real. Without healing or defensive support, you can kill yourself.
-- Rupture is Uncommon — not guaranteed in every run.
-- Enemies that heal or have high HP can outlast you if you don't scale fast enough.
+Doormaker has turns that prohibit card draw, which counters draw-dependent loops.
 
----
+**Countermeasures:**
+- Race: Kill within first 3–4 turns before anti-draw activates
+- 0-cost cards: Spite, Pact's End, Bloodletting are playable without draw
+- Pre-block: Build massive block via Feel No Pain on the turn before restriction
+- Emergency: Impervious, block potions for the restricted turn
+- Best case: Charon's Ashes provides passive damage even during restricted turns
 
-## Build 5: Vulnerable
+## Quick Reference
 
-**Strategy**: Apply Vulnerable to enemies (+50% damage taken), then exploit it with Ironclad-specific cards that gain extra effects when enemies are Vulnerable (draw, Block, scaling).
+### Must-Have Cards (S-Tier)
+Offering, Corruption, Dark Embrace, Feel No Pain, Bloodletting, Burning Pact, True Grit
 
-**Why it works**: New to STS2. Ironclad has unique cards that reward Vulnerable beyond just the 50% damage boost. Simple, aggressive, and consistent.
+### Phase 1 Commons to Take
+Pommel Strike, Shrug It Off, True Grit, Headbutt, Iron Wave
 
-### Core Cards
+### Key Upgrade Targets
+Pommel Strike, Offering, Dark Embrace, Corruption, Bloodletting, Feel No Pain
 
-| Card | Role | Priority |
-|------|------|----------|
-| Bash | Starting card. 8 damage + 2 Vulnerable. Upgrade to 3 Vulnerable. | Upgrade early |
-| Dismantle | 8 damage, hits twice if enemy Vulnerable. 1 energy. Efficient damage. | High |
-| Taunt | Apply 1 Vulnerable (2 upgraded). Enables Colossus. | High |
-| Tremble | Apply Vulnerable for 2 turns. Consistent applicator. | Medium |
-| Uppercut | 13 damage + 1 Weak + 1 Vulnerable. Versatile. | High |
-| Cruelty | Strong damage when enemy is Vulnerable. Finisher. | High |
+### Shop Priority
+1. Card removal (always)
+2. S-tier card (any price)
+3. A-tier card (≤ 150g)
+4. Energy relic (≤ 300g)
 
-### Scaling Cards
-
-- **Dominate**: Gains Strength over time while enemy is Vulnerable. Boss-killer for long fights.
-- **Colossus**: When enemy is Vulnerable, gain Block equal to your current Block. Bridges into Block build.
-- **Molten Fist**: Doubles Vulnerable stacks. Enables massive damage windows.
-
-### Key Relics
-
-| Relic | Effect |
-|-------|--------|
-| Paper Phrog | Vulnerable enemies take 75% more damage instead of 50% |
-| Bag of Marbles | Apply 1 Vulnerable to all enemies at start of combat |
-| Sling of Courage | Start Elite combats with 2 Strength |
-
-### How to Play
-
-1. **Act 1**: Upgrade Bash. Take Tremble, Dismantle, Uppercut. Focus on reliable Vulnerable application.
-2. **Act 2**: Add Cruelty, Dominate for scaling. Colossus if going Block hybrid.
-3. **Act 3+**: Skip weak attack cards. You need Vulnerable enablers + payoff cards, not raw damage.
-4. **In combat**: Apply Vulnerable first, then attack. Prioritize multi-hit and bonus-damage cards.
-
-### Weakness
-
-- Vulnerable is a debuff — enemies with Artifact block it. Need Artifact removal or backup plan.
-- Pure Vulnerable builds lack scaling against bosses with huge HP pools. Needs Dominate or Strength support.
-- Falls off late game without a secondary engine.
-
----
-
-## Evaluation Framework
-
-For card tiers, weakness mapping, upgrade priority, deck size rules, and gold efficiency, see `docs/deck-building-framework.md`. That document is the single source of truth for all evaluation logic used by the card-reward, shop-evaluation, and rest-site-tactics skills.
-
-## General Tips
-
-- **Burning Blood** heals 6 HP after each combat. Taking some damage to deal more damage is often correct.
-- **Remove Strikes**: At shops, removing basic Strikes improves deck consistency significantly.
-- **Don't over-draft attacks**: A hand full of attacks with no Block is lethal. Maintain balance.
-- **Energy relics**: Any relic that gives extra energy is valuable in every build.
-- **Campfires**: Prefer upgrading over resting unless HP is critically low. An upgraded key card changes boss fights more than 24 HP.
+### Removal Priority
+Curses → Defends → Strikes → Status → Non-infinite cards

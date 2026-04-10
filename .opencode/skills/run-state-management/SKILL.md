@@ -1,11 +1,11 @@
 ---
 name: run-state-management
-description: Run state tracking for Slay the Spire 2 — persistent deck/build tracking across combats with automatic reset detection
+description: Run state tracking for Slay the Spire 2 — persistent infinite build tracking across combats with automatic reset detection
 ---
 
 # Run State Management
 
-Use this skill to **manage the run-state.md file** — a persistent record of the current run's build direction, key cards, and progression.
+Use this skill to **manage the run-state.md file** — a persistent record of the current run's infinite build progress, key components, and readiness level.
 
 ## File Location
 
@@ -31,9 +31,15 @@ echo "## Character: The Ironclad" >> ./run-state.md
 echo "## Act: 1" >> ./run-state.md
 echo "## Ascension: 0" >> ./run-state.md
 echo "" >> ./run-state.md
-echo "## Build: Early Act 1 / Undecided" >> ./run-state.md
+echo "## Phase: 1 — Component Collection" >> ./run-state.md
 echo "" >> ./run-state.md
-echo "## Key Cards: None yet" >> ./run-state.md
+echo "## Infinite Readiness: Not Started" >> ./run-state.md
+echo "" >> ./run-state.md
+echo "## Infinite Components:" >> ./run-state.md
+echo "- Exhaust: None (need ≥2)" >> ./run-state.md
+echo "- Draw/Cycle: None (need ≥2)" >> ./run-state.md
+echo "- Energy: None (need ≥1)" >> ./run-state.md
+echo "- Engine Powers: None" >> ./run-state.md
 echo "" >> ./run-state.md
 echo "## Deck Size: 10 (starter)" >> ./run-state.md
 echo "" >> ./run-state.md
@@ -41,9 +47,9 @@ echo "## Relics: Burning Blood" >> ./run-state.md
 echo "" >> ./run-state.md
 echo "## Potions: None" >> ./run-state.md
 echo "" >> ./run-state.md
-echo "## Weaknesses: Basic starter deck - needs damage, AoE, scaling" >> ./run-state.md
+echo "## Weaknesses: Starter deck — needs exhaust, draw, energy, damage" >> ./run-state.md
 echo "" >> ./run-state.md
-echo "## Notes: New run started. Looking for archetype signals." >> ./run-state.md
+echo "## Notes: New run. Collecting infinite components." >> ./run-state.md
 ```
 
 ## Standard File Format
@@ -52,94 +58,137 @@ echo "## Notes: New run started. Looking for archetype signals." >> ./run-state.
 # Run State
 
 ## Character: The Ironclad
-## Act: 1
-## Ascension: 0
+## Act: [1/2/3/4]
+## Ascension: [0-20]
 
-## Build: [Archetype / Stage / Flexibility]
+## Phase: [1 — Component Collection | 2 — Infinite Execution]
 
-## Key Cards: [List of archetype-defining cards]
+## Infinite Readiness: [Not Started | Building | Almost Ready | Infinite Ready]
+
+## Infinite Components:
+- Exhaust: [card list] ([count]/2 minimum)
+- Draw/Cycle: [card list] ([count]/2 minimum)
+- Energy: [card list] ([count]/1 minimum)
+- Engine Powers: [Dark Embrace / Feel No Pain / Corruption — list which are owned]
 
 ## Deck Size: [Number]
 
-## Relics: [List of key relics]
+## Relics: [List of key relics, flag infinite-critical ones]
 
 ## Potions: [Current potions]
 
-## Weaknesses: [Current deck gaps]
+## Weaknesses: [Current deck gaps relative to infinite]
 
 ## Notes: [Strategic observations and priorities]
 ```
 
+## Infinite Component Tracking
+
+### Component Categories
+
+Track every card in the deck that contributes to the infinite engine:
+
+| Category | Cards to Track |
+|----------|---------------|
+| **Exhaust Sources** | True Grit, Burning Pact, Second Wind, Brand, Stoke, Havoc, Corruption (also Engine Power) |
+| **Draw/Cycle Sources** | Pommel Strike, Shrug It Off, Battle Trance, Dark Embrace (also Engine Power), Headbutt |
+| **Energy Sources** | Bloodletting, Offering, Forgotten Ritual, Expect a Fight |
+| **Engine Powers** | Dark Embrace, Feel No Pain, Corruption (track separately — these are the critical multipliers) |
+
+Also track infinite-relevant colorless cards: Purity (S-tier), Flash of Steel, Finesse, Master of Strategy, Production, Restlessness.
+
+### Readiness Level Calculation
+
+| Level | Criteria | Phase |
+|-------|----------|-------|
+| **Not Started** | 0–1 total components across all categories | Phase 1 |
+| **Building** | 2–4 components, but missing at least one entire category | Phase 1 |
+| **Almost Ready** | All 3 categories have minimum count (≥2 exhaust, ≥2 draw, ≥1 energy) AND deck ≤ 20 | Phase 1→2 transition |
+| **Infinite Ready** | All categories met + (deck ≤ 16 OR Corruption is in deck) | Phase 2 |
+
+**Corruption override**: If Corruption is obtained, immediately set readiness to at least "Almost Ready" regardless of other component counts. Corruption single-handedly activates the exhaust engine.
+
+### Missing Category Detection
+
+When updating, explicitly identify what's missing:
+
+```markdown
+## Weaknesses: Missing Draw/Cycle (only 1 source: Pommel Strike). Need Battle Trance, Shrug It Off, or Dark Embrace.
+```
+
+This helps the card-reward and shop-evaluation skills prioritize the right pickups.
+
 ## When to Read
 
 **Before every combat (Step 0 in combat-loop):**
-- Read `run-state.md` to understand current build direction
-- Use this to inform turn planning and target priorities
+- Read `run-state.md` to understand infinite readiness level
+- If "Infinite Ready": plan to exhaust-to-loop in combat
+- If "Building": play normally but use exhaust cards for value
 
 **Before card reward evaluation:**
-- Check current archetype assessment
-- Determine if card fits existing archetype or opens new direction
+- Check readiness level and missing categories
+- Determine if offered card fills a gap or is noise
 
 ## When to Update
 
 Update the run-state.md file in these situations:
 
-### 1. After Card Rewards (Meaningful Changes Only)
-- Archetype commitment changes (e.g., picking Corruption commits to Exhaust)
-- Critical card added that enables a combo
-- Deck size crosses threshold (15, 20, 25, 30+)
+### 1. After Card Rewards (Component Changes)
+- New infinite component added → recalculate readiness
+- Readiness level changes (e.g., "Building" → "Almost Ready")
+- Deck size crosses threshold (12, 16, 20)
 
 ### 2. After Relic Acquisition
-- Relic changes build direction (e.g., Dead Branch with Exhaust)
-- Relic enables new strategy
+- Infinite-critical relic obtained (Unceasing Top, Charon's Ashes, Runic Pyramid)
+- Relic trap taken that hurts infinite (Velvet Choker, Fiddle — note as WARNING)
 
-### 3. After Act Transition
+### 3. After Card Removal (Shop/Event)
+- Track which basics were removed (e.g., "3/4 Defends removed, 2/5 Strikes removed")
+- Recalculate deck size and readiness
+
+### 4. After Act Transition
 - Update Act number
-- Reassess build viability for next Act's challenges
+- Reassess: if Act 2+ and readiness is still "Not Started", note fallback may be needed
 
-### 4. After Deck Transformation Events
-- Card removal
-- Card upgrade events
-- Special card additions (from events, shops, etc.)
+### 5. After Deck Transformation Events
+- Card upgrades (especially Pommel Strike+, Dark Embrace+, Corruption+)
+- Transform events that add/remove cards
 
 ## Update Procedure
+
+When updating, rewrite the full run-state.md with current data:
 
 ```markdown
 # Run State
 
-## Character: [Character Name]
+## Character: The Ironclad
 ## Act: [1/2/3/4]
 ## Ascension: [0-20]
 
-## Build: [Description]
+## Phase: [1 | 2]
 
-## Key Cards: [Card list]
+## Infinite Readiness: [Not Started | Building | Almost Ready | Infinite Ready]
 
-## Deck Size: [Count]
+## Infinite Components:
+- Exhaust: [cards] ([n]/2)
+- Draw/Cycle: [cards] ([n]/2)
+- Energy: [cards] ([n]/1)
+- Engine Powers: [list]
 
-## Relics: [Relic list]
+## Key Upgrades: [list upgraded infinite components]
 
-## Potions: [Potion list]
+## Deck Size: [count]
+## Basics Removed: [n]/4 Defends, [n]/5 Strikes
 
-## Weaknesses: [Analysis]
+## Relics: [list, flag infinite-critical with ★]
 
-## Notes: [Timestamped observations]
-- [Timestamp]: [Observation or strategic note]
+## Potions: [list]
+
+## Weaknesses: [missing categories or gaps]
+
+## Notes:
+- [observation or priority]
 ```
-
-## Archetype Signals Reference
-
-Use the **Archetype Signal Table** in `docs/deck-building-framework.md` as the authoritative source for archetype identification. Quick reference:
-
-| Archetype | Key Signals | Status |
-|-----------|-------------|--------|
-| **Strength** | Demon Form, Inflame, Whirlwind, Thrash | [ ] |
-| **Block/Body Slam** | Body Slam, Barricade, Unmovable | [ ] |
-| **Exhaust** | Corruption, Dark Embrace, Feel No Pain | [ ] |
-| **Bloodletting** | Rupture, Inferno, Crimson Mantle | [ ] |
-| **Vulnerable** | Dismantle, Cruelty, Dominate, Colossus | [ ] |
-
-Use checkboxes to track which archetypes show signals in the current deck.
 
 ## Example Run States
 
@@ -151,9 +200,15 @@ Use checkboxes to track which archetypes show signals in the current deck.
 ## Act: 1
 ## Ascension: 0
 
-## Build: Early Act 1 / Undecided
+## Phase: 1 — Component Collection
 
-## Key Cards: None yet
+## Infinite Readiness: Not Started
+
+## Infinite Components:
+- Exhaust: None (0/2)
+- Draw/Cycle: None (0/2)
+- Energy: None (0/1)
+- Engine Powers: None
 
 ## Deck Size: 10 (starter)
 
@@ -161,12 +216,12 @@ Use checkboxes to track which archetypes show signals in the current deck.
 
 ## Potions: None
 
-## Weaknesses: Basic starter deck - needs damage, AoE, scaling
+## Weaknesses: Starter deck — needs all infinite categories
 
-## Notes: Looking for archetype signals in first few combats.
+## Notes: New run. Priority: take any S/A-tier infinite component offered.
 ```
 
-### Mid-Act 1 (Archetype Forming)
+### Mid-Act 1 (Building)
 ```markdown
 # Run State
 
@@ -174,25 +229,32 @@ Use checkboxes to track which archetypes show signals in the current deck.
 ## Act: 1
 ## Ascension: 0
 
-## Build: Exhaust signals + Block engine (flexible)
+## Phase: 1 — Component Collection
 
-## Key Cards: Feel No Pain, Shrug It Off, True Grit
+## Infinite Readiness: Building
+
+## Infinite Components:
+- Exhaust: True Grit, Burning Pact (2/2 ✓)
+- Draw/Cycle: Pommel Strike, Shrug It Off (2/2 ✓)
+- Energy: None (0/1 ✗)
+- Engine Powers: None
 
 ## Deck Size: 14
+## Basics Removed: 1/4 Defends, 0/5 Strikes
 
 ## Relics: Burning Blood, Orichalcum
 
 ## Potions: Fire Potion
 
-## Weaknesses: No consistent scaling, no AoE yet
+## Weaknesses: Missing Energy source. Need Bloodletting, Offering, or Forgotten Ritual.
 
 ## Notes:
-- [Turn 4]: Picked Feel No Pain - commit to Exhaust archetype
-- [Turn 8]: Shrug It Off adds Block/Draw engine
-- Priority: Find Corruption or Dark Embrace for Exhaust core
+- Good exhaust + draw foundation
+- Priority: Bloodletting (common, should appear soon)
+- Next shop: remove a Defend
 ```
 
-### Act 2 (Committed Build)
+### Act 2 (Almost Ready → Infinite Ready)
 ```markdown
 # Run State
 
@@ -200,34 +262,76 @@ Use checkboxes to track which archetypes show signals in the current deck.
 ## Act: 2
 ## Ascension: 0
 
-## Build: Exhaust (Corruption online) + Block synergy
+## Phase: 2 — Infinite Execution
 
-## Key Cards: Corruption, Dark Embrace, Feel No Pain, Body Slam, Shrug It Off, Second Wind
+## Infinite Readiness: Infinite Ready
 
-## Deck Size: 22
+## Infinite Components:
+- Exhaust: True Grit, Burning Pact, Second Wind (3/2 ✓)
+- Draw/Cycle: Pommel Strike+, Shrug It Off, Battle Trance (3/2 ✓)
+- Energy: Bloodletting, Offering (2/1 ✓)
+- Engine Powers: Dark Embrace, Feel No Pain
 
-## Relics: Burning Blood, Dead Branch, Orichalcum
+## Key Upgrades: Pommel Strike+, Dark Embrace+
 
-## Potions: Dexterity Potion, Fairy in a Bottle
+## Deck Size: 16
+## Basics Removed: 3/4 Defends, 2/5 Strikes
 
-## Weaknesses: Deck size getting large, need more card draw
+## Relics: Burning Blood, Orichalcum, Charon's Ashes ★
+
+## Potions: Block Potion, Energy Potion
+
+## Weaknesses: Deck still has 1 Defend and 3 Strikes. Need more removal.
 
 ## Notes:
-- [Act 2, Floor 15]: Corruption + Dark Embrace online - engine working
-- [Act 2, Floor 18]: Dead Branch acquired - adds random cards, watch for bloat
-- Be selective with card picks from here
+- Engine fully online. Charon's Ashes = passive AoE kill during loop.
+- SKIP all card rewards from here.
+- Every shop: remove a card.
+- Combat plan: setup powers → exhaust to loop → kill.
+```
+
+### Fallback State (Mid-Act 2, Infinite Failed)
+```markdown
+# Run State
+
+## Character: The Ironclad
+## Act: 2
+## Ascension: 0
+
+## Phase: 1 — Component Collection (FALLBACK)
+
+## Infinite Readiness: Not Started (FALLBACK: Exhaust Midrange)
+
+## Infinite Components:
+- Exhaust: True Grit (1/2 ✗)
+- Draw/Cycle: Shrug It Off (1/2 ✗)
+- Energy: None (0/1 ✗)
+- Engine Powers: Feel No Pain
+
+## Deck Size: 18
+
+## Relics: Burning Blood, Vajra
+
+## Weaknesses: Infinite not viable. Pivoting to Exhaust Midrange + Strength.
+
+## Notes:
+- Only 1 exhaust, 1 draw by mid-Act 2. Infinite unlikely.
+- Feel No Pain provides value without full loop.
+- Pivot: Take Demon Form / Inflame if seen. Strength scaling as backup.
+- Ashen Strike / Pact's End as non-loop finishers.
 ```
 
 ## Integration with Other Skills
 
 | Skill | Integration Point |
 |-------|-------------------|
-| **combat-loop** | Step 0: Read run-state; After combat: Update Notes if meaningful |
-| **card-reward** | Before evaluation: Read archetype; After: Update if archetype shifts |
-| **deck-building agent** | All deck-mutation screens: update after card/relic/shop changes |
-| **game-master agent** | Update Act/floor progression after map transitions |
-| **end-state-evaluation** | Consider archetype patterns when generating candidate sequences |
-| **threat-assessment** | Use archetype to determine kill priority (e.g., Exhaust decks can afford longer fights) |
+| **combat-loop** | Step 0: Read readiness level. If "Infinite Ready", plan exhaust-to-loop sequence. |
+| **card-reward** | Check missing categories → prioritize cards that fill gaps. If "Infinite Ready", skip all rewards. |
+| **shop-evaluation** | Card removal is #1 priority. Buy cards that fill missing categories. |
+| **rest-site-tactics** | Upgrade Tier 1 infinite targets (Pommel Strike, Dark Embrace, Corruption). |
+| **end-state-evaluation** | If "Infinite Ready", add infinite loop as candidate sequence type. |
+| **threat-assessment** | Infinite decks can afford longer fights — reduce urgency of fast kills pre-loop. |
+| **map-pathing** | Infinite builds value shops highly for card removal. Route toward shops. |
 
 ## Error Handling
 

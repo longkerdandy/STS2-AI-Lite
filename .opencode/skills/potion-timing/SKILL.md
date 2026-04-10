@@ -9,6 +9,34 @@ Use this skill when **deciding whether to use a potion** in combat or when **eva
 
 Potions are single-use consumables with powerful effects. Using them at the right time is critical — wasted potions can't be recovered.
 
+## Infinite Engine Context
+
+Potion strategy changes based on Infinite Readiness (read `run-state.md`):
+
+| Readiness | Potion Strategy |
+|-----------|----------------|
+| **Not Started / Building** | Standard potion usage — survive fights to keep collecting components |
+| **Almost Ready** | Use defensive potions aggressively to survive until engine comes online. Save Energy Potions for the turn you set up the engine. |
+| **Infinite Ready** | Potions matter most in the **setup phase** (turns 1-3 before loop starts). Once loop is running, potions are unnecessary. Use them early to survive setup. |
+
+### Engine Setup Potions (High Value for Infinite)
+
+| Potion | Infinite Value | When to Use |
+|--------|---------------|-------------|
+| **Energy Potion** (+2 Energy) | **Critical** | Turn where you play Corruption + Dark Embrace + other engine pieces. Extra energy enables full setup in one turn. |
+| **Drawing Potion** (+3 Draw) | **Very High** | Early turns to find engine components faster. Draw into Corruption/Dark Embrace/Feel No Pain. |
+| **Block Potion** (12 Block) | **High** | Setup turns when you're spending all energy on Powers instead of blocking. Buys time. |
+| **Duplication Potion** | **High** | Duplicate Offering (5 cards + energy) or a key Power if you have 2. |
+| **Dexterity Potion** (+2 Dex) | Low | Less valuable — once loop runs, Feel No Pain provides all block needed. |
+
+### Pre-Loop Survival Priority
+
+During turns 1-3 of a fight (before Infinite loop activates):
+1. **Use defensive potions liberally** — Block Potion, Ancient Potion to survive while setting up
+2. **Use Energy Potion on THE setup turn** — the turn you play Corruption + draw/exhaust Powers
+3. **Use Drawing Potion on turn 1** — maximizes chance of finding engine pieces early
+4. **Save offensive potions** — once loop runs, damage is unlimited; offensive potions are wasted
+
 ## When to Use Potions
 
 **Use immediately when:**
@@ -90,6 +118,23 @@ Potions are single-use consumables with powerful effects. Using them at the righ
 4. Is my potion belt full and I might find better potions?
    YES -> Use weakest potion now
    NO  -> Save all potions
+```
+
+### Infinite-Specific Flowchart
+
+```
+If Infinite Ready:
+  1. Is this the setup turn (playing Corruption/Dark Embrace/Powers)?
+     YES -> Use Energy Potion + Drawing Potion NOW
+     NO  -> Continue
+
+  2. Am I taking lethal during setup (before loop active)?
+     YES -> Use defensive potions to survive setup phase
+     NO  -> Continue
+
+  3. Is the Infinite loop already running?
+     YES -> Potions are unnecessary. Save for next fight.
+     NO  -> Consider potions to accelerate reaching loop state
 ```
 
 ## Potion Interaction Rules
