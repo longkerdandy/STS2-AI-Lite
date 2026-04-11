@@ -53,7 +53,7 @@ The AI reads game state as JSON, makes decisions using strategy documents and sk
 
 ### 1. Install Mod & CLI
 
-使用安装脚本一次性安装 Mod 和 CLI：
+Install Mod and CLI with one command:
 
 **Windows (PowerShell):**
 
@@ -67,15 +67,15 @@ irm https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.ps1
 curl -fsSL https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.sh | bash
 ```
 
-脚本会自动：
-- 检测 Steam 游戏目录（包括自定义库文件夹）
-- 下载最新版 CLI 和 Mod
-- 将 CLI 安装到 PATH（Windows: `%LOCALAPPDATA%\sts2-cli`，macOS/Linux: `~/.local/bin`）
-- 将 Mod 部署到游戏的 `mods/` 目录
+The installer will automatically:
+- Detect your Steam game directory (including custom library folders)
+- Download the latest CLI and Mod
+- Install CLI to PATH (Windows: `%LOCALAPPDATA%\sts2-cli`, macOS/Linux: `~/.local/bin`)
+- Deploy the Mod to the game's `mods/` directory
 
-> **WSL 注意：** CLI 安装到 Windows 侧（`%LOCALAPPDATA%\sts2-cli\sts2.exe`）并创建 bash 别名，因为游戏和 Named Pipe 在 Windows 上运行。
+> **WSL Note:** The CLI is installed on the Windows side (`%LOCALAPPDATA%\sts2-cli\sts2.exe`) with a bash alias, since the game and Named Pipe run on Windows.
 
-#### 安装指定版本
+#### Install a Specific Version
 
 **PowerShell:**
 ```powershell
@@ -87,11 +87,11 @@ $env:STS2_VERSION="0.102.1"; irm https://raw.githubusercontent.com/longkerdandy/
 curl -fsSL https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.sh | bash -s -- -v 0.102.1
 ```
 
-#### 手动安装
+#### Manual Install
 
-如需手动安装，请从 [GitHub Releases](https://github.com/longkerdandy/STS2-Cli-Mod/releases) 下载：
-- **CLI** — `sts2-cli-v{version}-{platform}.zip`，解压后添加到 PATH
-- **Mod** — `sts2-mod-v{version}.zip`，将 `STS2.Cli.Mod.dll` 和 `STS2.Cli.Mod.json` 放入游戏目录的 `mods/` 文件夹
+For manual installation, download from [GitHub Releases](https://github.com/longkerdandy/STS2-Cli-Mod/releases):
+- **CLI** — `sts2-cli-v{version}-{platform}.zip`, extract and add to PATH
+- **Mod** — `sts2-mod-v{version}.zip`, extract `STS2.Cli.Mod.dll` and `STS2.Cli.Mod.json` into the game's `mods/` folder
 
 ### 2. Configure Your Coding Agent
 
