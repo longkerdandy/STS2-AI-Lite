@@ -25,9 +25,11 @@ Any tool that can read Markdown, run shell commands, and follow structured instr
 
 ```
 CLI Coding Agent (OpenCode / Claude Code / Kimi Code / ...)
-  └── Game Master Agent          ← routes game state to subagents
-        ├── Combat Agent         ← fights battles
-        └── Deck-Building Agent  ← rewards, shop, rest site
+  └── Game Master Agent          ← single agent, handles ALL screens directly
+        ├── Combat               ← inline, no subagent dispatch
+        ├── Deck-Building        ← inline (rewards, shop, rest site)
+        ├── Map Navigation       ← inline
+        └── Events / Treasure    ← inline
               ↕
          ./sts2 CLI              ← reads/controls the game via named pipe
               ↕
@@ -49,35 +51,49 @@ The AI reads game state as JSON, makes decisions using strategy documents and sk
 
 ## Setup
 
-### 1. Install the Mod
+### 1. Install Mod & CLI
 
-Follow [STS2-Cli-Mod](https://github.com/longkerdandy/STS2-Cli-Mod) instructions to install BepInEx and the mod into your STS2 game directory.
+使用安装脚本一次性安装 Mod 和 CLI：
 
-### 2. Install the CLI
+**Windows (PowerShell):**
 
-Build and publish the CLI binary:
-
-```bash
-# In the STS2-Cli-Mod repo
-dotnet publish STS2.Cli.Cmd/STS2.Cli.Cmd.csproj -c Release -r <rid>
+```powershell
+irm https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.ps1 | iex
 ```
 
-Place the output binary in one of these standard paths (auto-detected by the wrapper script):
-
-| Platform | Path |
-|----------|------|
-| Windows | `%LOCALAPPDATA%\sts2-cli\sts2.exe` |
-| WSL | `/mnt/c/Users/<user>/AppData/Local/sts2-cli/sts2.exe` |
-| Linux | `~/.local/bin/sts2` |
-| macOS | `~/.local/bin/sts2` |
-
-Or set `STS2_CLI_DIR` to the directory containing the binary:
+**WSL / macOS / Linux:**
 
 ```bash
-export STS2_CLI_DIR=/path/to/dir
+curl -fsSL https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.sh | bash
 ```
 
-### 3. Configure Your Coding Agent
+脚本会自动：
+- 检测 Steam 游戏目录（包括自定义库文件夹）
+- 下载最新版 CLI 和 Mod
+- 将 CLI 安装到 PATH（Windows: `%LOCALAPPDATA%\sts2-cli`，macOS/Linux: `~/.local/bin`）
+- 将 Mod 部署到游戏的 `mods/` 目录
+
+> **WSL 注意：** CLI 安装到 Windows 侧（`%LOCALAPPDATA%\sts2-cli\sts2.exe`）并创建 bash 别名，因为游戏和 Named Pipe 在 Windows 上运行。
+
+#### 安装指定版本
+
+**PowerShell:**
+```powershell
+$env:STS2_VERSION="0.102.1"; irm https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.ps1 | iex
+```
+
+**bash:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/longkerdandy/STS2-Cli-Mod/main/install.sh | bash -s -- -v 0.102.1
+```
+
+#### 手动安装
+
+如需手动安装，请从 [GitHub Releases](https://github.com/longkerdandy/STS2-Cli-Mod/releases) 下载：
+- **CLI** — `sts2-cli-v{version}-{platform}.zip`，解压后添加到 PATH
+- **Mod** — `sts2-mod-v{version}.zip`，将 `STS2.Cli.Mod.dll` 和 `STS2.Cli.Mod.json` 放入游戏目录的 `mods/` 文件夹
+
+### 2. Configure Your Coding Agent
 
 The project currently ships with OpenCode configuration (`opencode.json`, `.opencode/`). Edit `opencode.json` to set your LLM provider and model:
 
@@ -92,7 +108,7 @@ See [OpenCode docs](https://opencode.ai/docs) for provider configuration.
 
 > **Other tools:** Support for Claude Code (`CLAUDE.md`), Kimi Code, and similar tools is planned. The core strategy lives in `AGENTS.md` and `docs/` which are tool-agnostic -- only the agent/skill wiring needs adaptation per tool.
 
-### 4. Verify Connection
+### 3. Verify Connection
 
 Launch STS2 with the mod loaded, then test:
 
@@ -151,7 +167,7 @@ STS2-AI-Lite/
 ├── opencode.json               # OpenCode-specific config
 ├── sts2 / sts2.cmd             # CLI wrapper scripts
 ├── .opencode/                  # OpenCode-specific agent/skill wiring
-│   ├── agents/                 #   3 agents: game-master, combat, deck-building
+│   ├── agents/                 #   1 agent: game-master (unified, no subagents)
 │   ├── skills/                 #   7 strategy skills (combat-loop, map-pathing, etc.)
 │   └── commands/play.md        #   /play auto-play command
 └── docs/                       # Game knowledge & strategy (tool-agnostic)
