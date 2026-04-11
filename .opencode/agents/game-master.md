@@ -1,7 +1,6 @@
 ---
 description: "STS2 unified agent — handles all game screens directly: combat, deck-building, map, events, shop, rest site, and full run lifecycle"
 mode: primary
-model: kimi-for-coding/k2p5
 temperature: 0.1
 permission:
   bash:
