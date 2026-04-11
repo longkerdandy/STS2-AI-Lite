@@ -14,7 +14,8 @@
     },
     "read": "allow",
     "edit": "allow",
-    "skill": "allow"
+    "skill": "allow",
+    "todowrite": "deny"
   },
   "provider": {
     "kimi-for-coding": {
